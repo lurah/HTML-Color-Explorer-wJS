@@ -1,0 +1,69 @@
+/* General styles for the range input */
+.slider {
+    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+    -moz-appearance: none;
+    appearance: none;
+    
+    height: 9px;
+    border-radius: 5px;
+    background: transparent;
+    outline: none; /* Remove focus outline */    
+  }
+  
+/* Styling the track in WebKit browsers */
+.slider::-webkit-slider-runnable-track {
+    height: 8px; /* Set the height of the track */
+    width: 150px;
+    outline: solid var(--bulma-scheme-main);
+    border-radius: 5px; /* Rounded corners for the track */
+  }
+
+/* Styling the track in Firefox */
+.slider::-moz-range-track {
+    height: 9px; /* Set the height of the track */
+    width: 150px;
+    border: 2px solid var(--bulma-scheme-main);
+    border-radius: 8px; /* Rounded corners for the track */
+  }
+  
+/* Styling the thumb in WebKit browsers */
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Remove default styling */
+    appearance: none;
+    position: relative;
+    top: -3px;
+    width: 14px; /* Width of the thumb */
+    height: 14px; /* Height of the thumb */
+    background: var(--bulma-text-light);
+    outline: solid var(--bulma-text-invert);
+    border-radius: 50%; /* Circular shape */
+    cursor: pointer; /* Pointer cursor on hover */    
+  }
+  
+/* Styling the thumb in Firefox */
+.slider::-moz-range-thumb {
+    -moz-appearance: none;
+    appearance: none;
+    width: 14px; /* Width of the thumb */
+    height: 14px; /* Height of the thumb */
+    background: var(--bulma-text-light);
+    border: 2px solid var(--bulma-text-invert);
+    border-radius: 50%; /* Circular shape */
+    cursor: pointer; /* Pointer cursor on hover */
+  }
+
+.box.red {
+  background-color: rgb(255,0,0);
+}
+
+.box.green {
+  background-color: rgb(0,255,0);
+}
+
+.box.blue {
+  background-color: rgb(0,0,255);
+}
+
+.column.box {
+  margin-bottom: 10px;
+}
