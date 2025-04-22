@@ -2,8 +2,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     let red, green, blue, hue, saturation, lightness; 
-    const sliders = document.getElementsByClassName('slider');
-
+    
     function rgbToHsl(r, g, b) {
         // Normalize R, G, B values to the range [0, 1]
         r /= 255; g /= 255; b /= 255;
@@ -60,65 +59,165 @@ document.addEventListener('DOMContentLoaded', function() {
         // or keep as is for full precision. Rounding to 0 decimals for simplicity here.
         s = Math.round(s);
         l = Math.round(l);
-      
-      
+        
         return [h, s, l];
       }
+    
+      function gradBackground(persen) {
+        const bgValue = `linear-gradient(to right,
+                         var(--bulma-text-light) 0%, var(--bulma-text-light) ${persen}%,
+                         transparent ${persen}%, transparent 100%)`;
+        return bgValue;
+    }
 
+    function updateOther(inValue, inPrm, inColor) {
+                
+        let percentage;
+        
+        if (inPrm === 'hue') {
+            percentage = (inValue / 360) * 100;
+        } else if (inPrm === 'saturation' || inPrm === 'lightness') {
+            percentage = (inValue / 100) * 100;
+        } else {
+            percentage = (inValue / 255) * 100;            
+        }
 
-    function updateRangeTrack() {
-        //console.log ("Halloooo .......");
-        const value = this.value;
-        const max = this.max;
-        const percentage = (value / max) * 100;        
-        const angmaks = this.nextElementSibling;
+        otherEl = document.querySelector(`.slider.${inPrm}`);
+        otherEl.value = inValue;
+        otherEl.nextElementSibling.innerHTML = inValue;
+        otherEl.style.background = gradBackground(percentage);
 
-        angmaks.innerHTML = value;
+        const hslBox = document.querySelectorAll('.box.hue, .box.saturation, .box.lightness');
+        hslBox.forEach (hslbox => {hslbox.style.background = inColor;})
+        //otherEl.parentElement.parentElement.style.background = inColor;
+    }
+
+    function updateHSL(elm) {
+        
+        const value = elm.value;
+        // Update the background gradient dynamically
+        let percentage = (value / elm.max) * 100;
+        elm.style.background = gradBackground(percentage);
+
+        let nextEl = elm.nextElementSibling;
+        nextEl.innerHTML = value;
+
+        let hslnya;
+        if (elm.classList.contains('hue')) {
+            hslnya = `hsl(${value},${saturation},${lightness})`;
+            hue = value;
+        } else if (elm.classList.contains('saturation')) {
+            hslnya = `hsl(${hue},${value},${lightness})`;
+            saturation = value;
+        } else {
+            hslnya = `hsl(${hue},${saturation},${value})`;
+            lightness = value;
+        } 
+        
+        const rgb = hslToRgb(hue, saturation, lightness);
+
+        updateOther(rgb[0], 'red', hslnya);
+
+        red = rgb[0]; 
+        percentage = red / 255;
+        angmaks = document.querySelector('.slider.red');
+        angmaks.value = red;
+        angmaks.nextElementSibling.innerHTML = red;
+        angmaks.style.background = gradBackGround;
+        document.querySelector('.box.hue').style.background = hslnya;
+
+        green = rgb[0]; 
+        percentage = green / 255;
+        angmaks = document.querySelector('.slider.green');
+        angmaks.value = green;
+        angmaks.nextElementSibling.innerHTML = green;
+        angmaks.style.background = gradBackGround;
+        document.querySelector('.box.saturation').style.background = hslnya;
+        
+        blue = rgb[0]; 
+        percentage = blue / 255;
+        angmaks = document.querySelector('.slider.blue');
+        angmaks.value = blue;
+        angmaks.nextElementSibling.innerHTML = blue;
+        angmaks.style.background = gradBackGround;
+        document.querySelector('.box.lightness').style.background = hslnya;
+
+    }
+
+    
+
+    function updateRGB(elm) {
+        
+        const value = elm.value;
+        // Update the background gradient dynamically
+        let percentage = (value / elm.max) * 100;
+        elm.style.background = gradBackground(percentage);
+
+        let nextEl = elm.nextElementSibling;
+        nextEl.innerHTML = value;
 
         let warna;
-        if (this.classList.contains('red')) {
+        if (elm.classList.contains('red')) {
             warna = `rgb(${value},${green},${blue})`;
             red = value;
-        } else if (this.classList.contains('green')) {
+        } else if (elm.classList.contains('green')) {
             warna = `rgb(${red},${value},${blue})`;
             green = value;
         } else {
             warna = `rgb(${red},${green},${value})`;
             blue= value;
+        } 
+        
+        const hsl = rgbToHsl(red, green, blue);
+        
+        updateOther(hsl[0], 'hue', warna);
+        updateOther(hsl[1], 'saturation', warna);
+        updateOther(hsl[2], 'lightness', warna);
+        /*
+        hue = hsl[0]; 
+        percentage = (hue / 360) * 100;
+        nextEl = document.querySelector('.slider.hue');
+        nextEl.value = hue;
+        nextEl.nextElementSibling.innerHTML = hue;
+        nextEl.style.background = gradBackground(percentage);
+        nextEl.parentElement.parentElement.style.background = warna;
+
+        saturation = hsl[1] 
+        percentage = (saturation / 100) * 100;
+        nextEl = document.querySelector('.slider.saturation');
+        nextEl.value = saturation;
+        nextEl.nextElementSibling.innerHTML = saturation;
+        nextEl.style.background = gradBackground(percentage);
+        nextEl.parentElement.parentElement.style.background = warna;
+
+        lightness = hsl[2] 
+        percentage = (lightness / 100) * 100;
+        nextEl = document.querySelector('.slider.lightness');
+        nextEl.value = lightness;
+        nextEl.nextElementSibling.innerHTML = lightness;
+        nextEl.style.background = gradBackground(percentage);
+        nextEl.parentElement.parentElement.style.background = warna;
+        */
+    }
+
+    function updateRangeTrack() {
+        if (this.matches('.red, .green, .blue')) {
+            updateRGB(this);
+        } else {
+            updateHSL(this);
         }
-
-        const [hue, saturation, lightness] = rgbToHsl(red, green, blue);
-        document.querySelector('.box.hue').value = hue;
-        console.log(`Hue: ${hue}`);
-        document.querySelector('.box.saturation').value = saturation;
-        console.log(saturation);
-        document.querySelector('.box.lightness').value = lightness;
-        console.log(lightness);
-
-    // Update the background gradient dynamically
-        this.style.background = `linear-gradient(to right, var(--bulma-text-light) 0%,
-                                 var(--bulma-text-light) ${percentage}%,
-                                 transparent ${percentage}%, transparent 100%)`;
-
-        document.querySelector('.box.hue').style.background = warna;
-        document.querySelector('.box.saturation').style.background = warna;
-        document.querySelector('.box.lightness').style.background = warna;
-    };
+    }
 
     // Attach event listeners
+    const sliders = document.getElementsByClassName('slider');
     for (let i = 0; i < sliders.length; i++) {
         const slider = sliders[i];
         slider.addEventListener('input', updateRangeTrack);
+    }
 
-        // Initialize the track on page load
-        const inputEvent = new InputEvent('input', {
-            bubbles: true,
-            cancelable: true
-          });
-        
-        slider.dispatchEvent(inputEvent);
-        };
-
+    // Initialize the track on page load
+    const inputEvent = new InputEvent('input', {bubbles: true, cancelable: true});
+    const mulai = document.querySelectorAll('.slider.red, .slider.blue, .slider.green');
+    mulai.forEach (element => {element.dispatchEvent(inputEvent);})
     
-    
-});
+})
