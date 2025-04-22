@@ -119,25 +119,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateOther(inValue, inPrm, inColor) {
         
-        //console.log(`updateOther: ${inValue}, ${inPrm}, ${inColor}`);
+        const otherEl = document.querySelector(`.slider.${inPrm}`);
         let percentage;
         
         if (inPrm === 'hue') {
-            percentage = (inValue / 360) * 100;
             hue = inValue;
-        } else if (inPrm === 'saturation') {
-            percentage = (inValue / 100) * 100;
+            percentage = (inValue / 360) * 100;
+            otherEl.nextElementSibling.innerHTML = `${inValue} deg`;}
+        else if (inPrm === 'saturation') {
             saturation = inValue;
-        } else if (inPrm === 'lightness') {
-            percentage = (inValue / 100) * 100;
+            percentage = inValue;
+            otherEl.nextElementSibling.innerHTML = `${inValue}%`;}
+        else if (inPrm === 'lightness') {
             lightness = inValue;
-        } else {
-            percentage = (inValue / 255) * 100;            
-        }
-
-        otherEl = document.querySelector(`.slider.${inPrm}`);
+            percentage = inValue;
+            otherEl.nextElementSibling.innerHTML = `${inValue}%`;}
+        else {
+            percentage = (inValue / 255) * 100;
+            otherEl.nextElementSibling.innerHTML = 
+                `Dec: ${inValue}, Hex: ${parseInt(inValue).toString(16).toUpperCase()}`;}
+        
         otherEl.value = inValue;
-        otherEl.nextElementSibling.innerHTML = inValue;
         otherEl.style.background = gradBackground(percentage);
 
         const hslBox = document.querySelectorAll('.box.hue, .box.saturation, .box.lightness');
@@ -147,28 +149,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateHSL(elm) {
         
         const value = elm.value;
-        //console.log(`updateHSL: ${value}`);
         // Update the background gradient dynamically
         let percentage = (value / elm.max) * 100;
         elm.style.background = gradBackground(percentage);
 
         let nextEl = elm.nextElementSibling;
-        nextEl.innerHTML = value;
-
+        
         let hslnya;
         if (elm.classList.contains('hue')) {
-            hslnya = `hsl(${value},${saturation}%,${lightness}%)`;
             hue = value;
-        } else if (elm.classList.contains('saturation')) {
-            hslnya = `hsl(${hue},${value}%,${lightness}%)`;
+            hslnya = `hsl(${value},${saturation}%,${lightness}%)`;
+            nextEl.innerHTML = `${value} deg`;}
+        else if (elm.classList.contains('saturation')) {
             saturation = value;
-        } else {
-            hslnya = `hsl(${hue},${saturation}%,${value}%)`;
+            hslnya = `hsl(${hue},${value}%,${lightness}%)`;
+            nextEl.innerHTML = `${value}%`;}
+        else {
             lightness = value;
-        } 
-        //console.log(`HSL nya adalah: ${hslnya}`);
+            hslnya = `hsl(${hue},${saturation}%,${value}%)`;
+            nextEl.innerHTML = `${value}%`;}
+
         const rgb = hslToRgb(hue, saturation, lightness);
-        //console.log(`RGB nya adalah: ${rgb}`);
         updateOther(rgb[0], 'red', hslnya);
         updateOther(rgb[1], 'green', hslnya);
         updateOther(rgb[2], 'blue', hslnya);        
@@ -181,20 +182,19 @@ document.addEventListener('DOMContentLoaded', function() {
         let percentage = (value / elm.max) * 100;
         elm.style.background = gradBackground(percentage);
 
-        let nextEl = elm.nextElementSibling;
-        nextEl.innerHTML = value;
+        let nextEl = elm.nextElementSibling;        
+        nextEl.innerHTML = `Dec: ${value}, Hex: ${parseInt(value).toString(16).toUpperCase()}`;
 
         let warna;
         if (elm.classList.contains('red')) {
-            warna = `rgb(${value},${green},${blue})`;
             red = value;
-        } else if (elm.classList.contains('green')) {
-            warna = `rgb(${red},${value},${blue})`;
+            warna = `rgb(${value},${green},${blue})`;}
+        else if (elm.classList.contains('green')) {
             green = value;
-        } else {
-            warna = `rgb(${red},${green},${value})`;
+            warna = `rgb(${red},${value},${blue})`;}
+        else {
             blue= value;
-        } 
+            warna = `rgb(${red},${green},${value})`;} 
         
         const hsl = rgbToHsl(red, green, blue);
         updateOther(hsl[0], 'hue', warna);
