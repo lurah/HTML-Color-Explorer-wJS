@@ -13,22 +13,35 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def box_color():
     respon = Div(
         Div(
-            Div(id="belakang", cls="use_bor"),
-            Div(id="depan", cls="use_bor"),
+            Div(id="belakang"),
+            Div(id="depan"),
             id="wadah", cls="use_bor"),
         Div(
-            P("Alpha: ", cls="label_alpha"),
+            P("ALPHA: ", cls="lbl_alpha"),
             Input(type="range", min="0", max="100", id="slider_alpha"),
-            id="angka_alpha", cls="use_bor"),
+            P("100%", cls="lbl_alpha"),
+            cls="mb-4"),
+        Div(
+            Label(f"COLOR: rgba(", fr="ip_red", cls="has-text-left is-size-7"),
+            Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="255",step="1",id="ip_blue",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka"),
+            Span(f")"),
+            P(),
+            Label(f"COLOR: hsla(", fr="ip_hue", cls="has-text-left is-size-7"),
+            Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka"),
+            Span(f","),
+            Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka"),
+            Span(f")")),
         cls="column is-narrow")
-    return respon
-
-def wadah_box_color():
-    respon = Div(
-        Div(cls="column"),
-        box_color(),
-        Div(cls="column"),
-        cls="columns is-mobile")
     return respon
 
 def slider(judul:str, maks):
@@ -41,41 +54,34 @@ def slider(judul:str, maks):
 
 def box_slider(judul1, judul2, maks1, maks2):
     respon = Div(
-        Div(cls="column"),
         Div(slider(f"{judul1}", f"{maks1}"), cls=f"column is-narrow box mx-2 {judul1}"),
         Div(slider(f"{judul2}", f"{maks2}"), cls=f"column is-narrow box mx-2 {judul2}"),
-        Div(cls="column"),
         cls="columns is-mobile")
     return respon
 
-def wadah_slider() {
+def wadah_slider():
     respon = Div(
-        Div(
-            cls="columns is-mobile"),
+        box_slider("red", "hue", 255, 360),
+        box_slider("green", "saturation", 255, 100),
+        box_slider("blue", "lightness", 255, 100),
         cls="column is-narrow")
-}
+    return respon
 
 def slider_and_box():
     respon = Div(
         Div(cls="column"),
-
+        wadah_slider(),
         box_color(),
         Div(cls="column"),
         cls="columns is-mobile")
+    return respon
 
 @app.get("/")
 def index():
-    return Title("HTML Color Explorer"),wadah_box_color()    
-
-    """def index():              
     return Title("HTML Color Explorer"), \
            Div(
-                H1("HTML Color Explorer", cls="title my-6"),
-                box_slider("red", "hue", 255, 360),
-                box_slider("green", "saturation", 255, 100),
-                box_slider("blue", "lightness", 255, 100),
-                cls="container has-text-centered")
-    """
-
-
+               H1("HTML Color Explorer", cls="title my-6"),
+               slider_and_box(),
+               cls="container has-text-centered")
+    
 serve()
