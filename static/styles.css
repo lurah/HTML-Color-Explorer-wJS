@@ -67,3 +67,35 @@
 .column.box {
   margin-bottom: 10px;
 }
+
+.use_bor {
+  border: 1px solid black;
+  margin: 10px;
+}
+
+#depan, #belakang {
+  width: 200px;
+  height: 80px;
+  position: relative;
+  
+}
+
+.label_alpha{  
+  margin-left: 10px;
+}
+
+#depan {
+  top: -70px;
+  left: 20px;
+}
+
+#wadah {
+  height: 140px;
+  margin-top: 20px;
+}
+
+#slider_alpha {
+  width: 210px;
+  margin-left: 10px;
+  margin-right: 20px;
+}
