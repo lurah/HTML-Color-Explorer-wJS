@@ -73,7 +73,7 @@ def slider_and_box():
         wadah_slider(),
         box_color(),
         Div(cls="column"),
-        cls="columns is-mobile")
+        cls="columns")
     return respon
 
 @app.get("/")
