@@ -12,16 +12,22 @@ app = FastHTML(pico=False, hdrs=hdrs)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 def box_color():
-    respon = Div(
+    respon = \
         Div(
             Div(id="belakang"),
             Div(id="depan"),
-            id="wadah", cls="use_bor"),
+            id="wadah", cls="use_bor"
+        ), \
         Div(
             P("ALPHA: ", cls="lbl_alpha"),
             Input(type="range", min="0", max="100", id="slider_alpha"),
             P("100%", cls="lbl_alpha"),
-            cls="mb-4"),
+            cls="mb-4"
+        )
+    return respon
+
+def input_color():
+    respon = \
         Div(
             Label(f"COLOR: rgba(", fr="ip_red", cls="has-text-left is-size-7"),
             Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka"),
@@ -41,10 +47,18 @@ def box_color():
             Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka"),
-            Span(f")")),
-        cls="column is-narrow")
+            Span(f")")
+        )
     return respon
 
+def full_box_color():
+    respon = Div(
+        box_color(),
+        input_color(),
+        cls="column is-narrow"
+    )    
+    return respon
+    
 def slider(judul:str, maks):
     respon = Div(
         P(f"{judul.upper()}", cls="has-text-primary-100"),
@@ -53,21 +67,29 @@ def slider(judul:str, maks):
         cls=f"has-text-left box {judul}")
     return respon
 
+def slider_rgb():
+    respon = Div(
+        slider("red", 255),
+        slider("green", 255),
+        slider("blue", 255),
+        cls="column is-narrow"
+    )
+    return respon
+
+def slider_hsl():
+    respon = Div(
+        slider("hue", 360),
+        slider("saturation", 100),
+        slider("lightness", 100),
+        cls="column is-narrow"
+    )
+    return respon
+
 def kolom():
     respon = Div(
-        Div(
-            slider("red", 255),
-            slider("green", 255),
-            slider("blue", 255),
-            cls="column is-narrow"
-        ),
-        Div(
-            slider("hue", 360),
-            slider("saturation", 100),
-            slider("lightness", 100),
-            cls="column is-narrow"
-        ),
-        box_color(),
+        slider_rgb(),
+        slider_hsl(),
+        full_box_color(),
         Div("Ini yang Lain lagi", cls="title column is-narrow"),
         cls="columns is-mobile is-multiline is-centered"
     )

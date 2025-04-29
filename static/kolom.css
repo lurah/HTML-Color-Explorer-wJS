@@ -1,9 +1,0 @@
-.column, .columns, .columns:last-child {
-    box-sizing: content-box;
-    margin: 2px;
-}
-
-.column {
-    padding: 0px;
-    border: 1px solid black;
-}
