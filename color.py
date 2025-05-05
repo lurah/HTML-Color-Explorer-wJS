@@ -3,6 +3,7 @@ from fasthtml.common import *
 hdrs=(Link(rel='icon', type='image/png', href='static/school-bus.png'),
       Link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css',
       type='text/css'),
+      #Link(rel='stylesheet', href='static/modbulma.css', type='text/css'),
       Link(rel='stylesheet', href='static/styles.css', type='text/css'),
       Script(src='static/slider.js'))
 
@@ -11,18 +12,19 @@ app = FastHTML(pico=False, hdrs=hdrs)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 def box_color():
-    respon = Div(
+    respon = \
         Div(
             Div(id="belakang"),
             Div(id="depan"),
-            id="wadah", cls="use_bor"),
+            id="wadah"), \
+        slider("alpha", 1)
+    return respon
+        
+def input_color():
+    respon = \
         Div(
-            P("ALPHA: ", cls="lbl_alpha"),
-            Input(type="range", min="0", max="100", id="slider_alpha"),
-            P("100%", cls="lbl_alpha"),
-            cls="mb-4"),
-        Div(
-            Label(f"COLOR: rgba(", fr="ip_red", cls="has-text-left is-size-7"),
+            Span(f"COLOR: ", cls="has-text-left is-size-7"),
+            Span(f"rgba(", cls="has-text-right is-size-7 sepan"),
             Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka"),
@@ -32,7 +34,8 @@ def box_color():
             Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka"),
             Span(f")"),
             P(),
-            Label(f"COLOR: hsla(", fr="ip_hue", cls="has-text-left is-size-7"),
+            Span(f"COLOR: ", cls="has-text-left is-size-7"),
+            Span(f"hsla(", cls="has-text-right is-size-7 sepan"),
             Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka"),
@@ -40,48 +43,57 @@ def box_color():
             Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka"),
-            Span(f")")),
-        cls="column is-narrow")
+            Span(f")")
+        )
     return respon
 
+def full_box_color():
+    respon = Div(
+        box_color(),
+        input_color(),
+        cls="column is-narrow box-color"
+    )    
+    return respon
+    
 def slider(judul:str, maks):
+    jarak = 1 if judul != 'alpha' else .01
     respon = Div(
         P(f"{judul.upper()}", cls="has-text-primary-100"),
-        Input(type="range", min="0", max=f"{maks}", cls=f"slider {judul}"), 
-        P(f"VAL: {maks}", cls="has-text-primary-100"),
-        cls="has-text-left")
+        Input(type="range", min="0", max=f"{maks}", step=jarak, cls=f"slider {judul}"), 
+        P(f"{maks}", cls="has-text-primary-100"),
+        cls=f"has-text-left box {judul}")
     return respon
 
-def box_slider(judul1, judul2, maks1, maks2):
+def slider_rgb():
     respon = Div(
-        Div(slider(f"{judul1}", f"{maks1}"), cls=f"column is-narrow box mx-2 {judul1}"),
-        Div(slider(f"{judul2}", f"{maks2}"), cls=f"column is-narrow box mx-2 {judul2}"),
-        cls="columns is-mobile")
+        slider("red", 255),
+        slider("green", 255),
+        slider("blue", 255),
+        cls="column is-narrow"
+    )
     return respon
 
-def wadah_slider():
+def slider_hsl():
     respon = Div(
-        box_slider("red", "hue", 255, 360),
-        box_slider("green", "saturation", 255, 100),
-        box_slider("blue", "lightness", 255, 100),
-        cls="column is-narrow")
+        slider("hue", 360),
+        slider("saturation", 100),
+        slider("lightness", 100),
+        cls="column is-narrow"
+    )
     return respon
 
-def slider_and_box():
+def kolom():
     respon = Div(
-        Div(cls="column"),
-        wadah_slider(),
-        box_color(),
-        Div(cls="column"),
-        cls="columns")
+        slider_rgb(),
+        slider_hsl(),
+        full_box_color(),
+        Div("Ini yang Lain lagi", cls="title column is-narrow"),
+        cls="columns is-mobile is-multiline is-centered"
+    )
     return respon
 
 @app.get("/")
 def index():
-    return Title("HTML Color Explorer"), \
-           Div(
-               H1("HTML Color Explorer", cls="title my-6"),
-               slider_and_box(),
-               cls="container has-text-centered")
-    
+    return H1("Judul-judulan", cls="title"), kolom()
+
 serve()
