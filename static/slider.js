@@ -1,7 +1,12 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
-    let red, green, blue, hue, saturation, lightness; 
+    let red = 255, green = 0, blue = 0;
+    let hue = 0, saturation = 100, lightness = 50;
+    let alpha = 1; 
+
+    const rgbSelector = document.querySelectorAll('.slider.red, .slider.blue, .slider.green');
+    const hslSelector = document.querySelectorAll('.slider.hue, .slider.saturation, .slider.lightness');
     
     function hslToRgb(h, s, l) {
         // Normalize H, S, L values to the range [0, 1]
@@ -117,94 +122,83 @@ document.addEventListener('DOMContentLoaded', function() {
         return bgValue;
     }
 
-    function updateOther(inValue, inPrm, inColor) {
-        
-        const otherEl = document.querySelector(`.slider.${inPrm}`);
-        let percentage;
-        
-        if (inPrm === 'hue') {
-            hue = inValue;
-            percentage = (inValue / 360) * 100;
-            otherEl.nextElementSibling.innerHTML = `${inValue} deg`;}
-        else if (inPrm === 'saturation') {
-            saturation = inValue;
-            percentage = inValue;
-            otherEl.nextElementSibling.innerHTML = `${inValue}%`;}
-        else if (inPrm === 'lightness') {
-            lightness = inValue;
-            percentage = inValue;
-            otherEl.nextElementSibling.innerHTML = `${inValue}%`;}
-        else {
-            percentage = (inValue / 255) * 100;
-            otherEl.nextElementSibling.innerHTML = 
-                `Dec: ${inValue}, Hex: ${parseInt(inValue).toString(16).toUpperCase()}`;}
-        
-        otherEl.value = inValue;
-        otherEl.style.background = gradBackground(percentage);
+    function updateHsl(elm = null) {
+        if (elm != null) {
+            const value = parseInt(elm.value);
+            if (elm.classList.contains('hue')) {hue = value;}
+            else if (elm.classList.contains('saturation')) {saturation = value;}
+            else {lightness = value;}
+            [red, green, blue] = hslToRgb(hue, saturation, lightness);
+        }
 
-        const hslBox = document.querySelectorAll('.box.hue, .box.saturation, .box.lightness');
-        hslBox.forEach (hslbox => {hslbox.style.background = inColor;})
+        let hsl = [hue, saturation, lightness];
+        let slideHsl;
+        for (let i=0; i < 3; i++) {
+            slideHsl = hslSelector[i];
+            slideHsl.value = hsl[i];
+            slideHsl.style.background = gradBackground((hsl[i] / slideHsl.max) * 100);
+            if (i == 0) {slideHsl.nextElementSibling.innerHTML = `${hsl[i]} deg`;}
+            else {slideHsl.nextElementSibling.innerHTML = `${hsl[i]} %`;}
+        }
     }
 
-    function updateHSL(elm) {
+    function updateRgb(elm = null) {
+        if (elm != null) {
+            const value = parseInt(elm.value);
+            if (elm.classList.contains('red')) {red = value;}
+            else if (elm.classList.contains('green')) {green = value;}
+            else {blue = value;}
+            [hue, saturation, lightness] = rgbToHsl(red, green, blue);
+        }
         
-        const value = elm.value;
-        // Update the background gradient dynamically
-        let percentage = (value / elm.max) * 100;
-        elm.style.background = gradBackground(percentage);
+        let rgb = [red, green, blue];
+        let slideRgb;
+        for (let i=0; i < 3; i++) {
+            slideRgb = rgbSelector[i];
+            slideRgb.value = rgb[i];
+            slideRgb.style.background = gradBackground((rgb[i] / slideRgb.max) * 100);
+            slideRgb.nextElementSibling.innerHTML = 
+              `Dec: ${rgb[i]}, Hex: ${rgb[i].toString(16).toUpperCase()}`;
+        }
+      }
 
-        let nextEl = elm.nextElementSibling;
-        
-        let hslnya;
-        if (elm.classList.contains('hue')) {
-            hue = value;
-            hslnya = `hsl(${value},${saturation}%,${lightness}%)`;
-            nextEl.innerHTML = `${value} deg`;}
-        else if (elm.classList.contains('saturation')) {
-            saturation = value;
-            hslnya = `hsl(${hue},${value}%,${lightness}%)`;
-            nextEl.innerHTML = `${value}%`;}
-        else {
-            lightness = value;
-            hslnya = `hsl(${hue},${saturation}%,${value}%)`;
-            nextEl.innerHTML = `${value}%`;}
-
-        const rgb = hslToRgb(hue, saturation, lightness);
-        updateOther(rgb[0], 'red', hslnya);
-        updateOther(rgb[1], 'green', hslnya);
-        updateOther(rgb[2], 'blue', hslnya);        
+    function updateBackground() {
+        const warnaBackground = document.querySelectorAll('.box.hue, .box.saturation, \
+              .box.lightness, .box.alpha');
+        warnaBackground.forEach (elm => {
+            elm.style.background = `rgb(${red}, ${green}, ${blue})`;
+        })
+    }
+    
+    function updateKotakWarna() {
+        const depan = document.querySelector('#depan');
+        const belakang = document.querySelector('#belakang');
+        depan.style.background = `rgba(${red},${green},${blue},${alpha})`;
+        belakang.style.background = `rgba(${255-red},${255-green},${255-blue},1)`;
     }
 
-    function updateRGB(elm) {
-        
-        const value = elm.value;
-        // Update the background gradient dynamically
-        let percentage = (value / elm.max) * 100;
-        elm.style.background = gradBackground(percentage);
-
-        let nextEl = elm.nextElementSibling;        
-        nextEl.innerHTML = `Dec: ${value}, Hex: ${parseInt(value).toString(16).toUpperCase()}`;
-
-        let warna;
-        if (elm.classList.contains('red')) {
-            red = value;
-            warna = `rgb(${value},${green},${blue})`;}
-        else if (elm.classList.contains('green')) {
-            green = value;
-            warna = `rgb(${red},${value},${blue})`;}
-        else {
-            blue= value;
-            warna = `rgb(${red},${green},${value})`;} 
-        
-        const hsl = rgbToHsl(red, green, blue);
-        updateOther(hsl[0], 'hue', warna);
-        updateOther(hsl[1], 'saturation', warna);
-        updateOther(hsl[2], 'lightness', warna);        
+    function updateAlpha(elm = null) {
+        if (elm != null) { alpha = parseFloat(elm.value);}
+        else { 
+            elm = document.querySelector('.slider.alpha');
+            elm.value = alpha;
+          }
+        elm.nextElementSibling.innerHTML = alpha;
+        elm.style.background = gradBackground(alpha * 100);
     }
 
     function updateRangeTrack() {
-        if (this.matches('.red, .green, .blue')) {updateRGB(this);} 
-        else {updateHSL(this);}
+        if (this.matches('.red, .green, .blue')) {
+            updateRgb(this);
+            updateHsl();
+        } 
+        else if (this.matches('.hue, .saturation, .lightness')) {
+            updateHsl(this);
+            updateRgb();
+        }
+        else {updateAlpha(this);}
+        updateBackground();
+        updateKotakWarna();
     }
 
     // Attach event listeners
@@ -214,9 +208,11 @@ document.addEventListener('DOMContentLoaded', function() {
         slider.addEventListener('input', updateRangeTrack);
     }
 
-    // Initialize the track on page load
-    const inputEvent = new InputEvent('input', {bubbles: true, cancelable: true});
-    const mulai = document.querySelectorAll('.slider.red, .slider.blue, .slider.green');
-    mulai.forEach (element => {element.dispatchEvent(inputEvent);})
-    
-})
+    updateRgb();
+    updateHsl();
+    updateKotakWarna();
+    updateAlpha();
+    updateBackground();
+
+  }
+)

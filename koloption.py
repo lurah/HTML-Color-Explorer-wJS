@@ -16,20 +16,15 @@ def box_color():
         Div(
             Div(id="belakang"),
             Div(id="depan"),
-            id="wadah", cls="use_bor"
-        ), \
-        Div(
-            P("ALPHA: ", cls="lbl_alpha"),
-            Input(type="range", min="0", max="100", id="slider_alpha"),
-            P("100%", cls="lbl_alpha"),
-            cls="mb-4"
-        )
+            id="wadah"), \
+        slider("alpha", 1)
     return respon
-
+        
 def input_color():
     respon = \
         Div(
-            Label(f"COLOR: rgba(", fr="ip_red", cls="has-text-left is-size-7"),
+            Span(f"COLOR: ", cls="has-text-left is-size-7"),
+            Span(f"rgba(", cls="has-text-right is-size-7 sepan"),
             Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka"),
@@ -39,7 +34,8 @@ def input_color():
             Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka"),
             Span(f")"),
             P(),
-            Label(f"COLOR: hsla(", fr="ip_hue", cls="has-text-left is-size-7"),
+            Span(f"COLOR: ", cls="has-text-left is-size-7"),
+            Span(f"hsla(", cls="has-text-right is-size-7 sepan"),
             Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka"),
             Span(f","),
             Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka"),
@@ -55,14 +51,15 @@ def full_box_color():
     respon = Div(
         box_color(),
         input_color(),
-        cls="column is-narrow"
+        cls="column is-narrow box-color"
     )    
     return respon
     
 def slider(judul:str, maks):
+    jarak = 1 if judul != 'alpha' else .01
     respon = Div(
         P(f"{judul.upper()}", cls="has-text-primary-100"),
-        Input(type="range", min="0", max=f"{maks}", cls=f"slider {judul}"), 
+        Input(type="range", min="0", max=f"{maks}", step=jarak, cls=f"slider {judul}"), 
         P(f"{maks}", cls="has-text-primary-100"),
         cls=f"has-text-left box {judul}")
     return respon
