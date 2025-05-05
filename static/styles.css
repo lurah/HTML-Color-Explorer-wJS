@@ -8,7 +8,7 @@
     -webkit-appearance: none; /* Remove default styling in WebKit browsers */
     -moz-appearance: none;
     appearance: none;
-    height: 8px; /* Set the height of the track */
+    height: 9px; /* Set the height of the track --> mostly influence mozzila*/
     width: 150px;
     border-radius: 5px;
     background: transparent;
@@ -17,15 +17,15 @@
   
 /* Styling the track in WebKit browsers */
 .slider::-webkit-slider-runnable-track {
+    height: 8px; /* independent from setting height above */
     outline: solid var(--bulma-scheme-main);
-    height: 8px;
     border-radius: 5px; /* Rounded corners for the track */
 }
 
 /* Styling the track in Firefox */
 .slider::-moz-range-track {
     height: 9px; /* Set the height of the track */
-    width: 150px;
+    /* width: 150px; */
     border: 2px solid var(--bulma-scheme-main);
     border-radius: 8px; /* Rounded corners for the track */
 }
@@ -95,16 +95,6 @@
   margin: 15px;
   border-radius: 15px;
 }
-
-/*
-#depan {
-  background-color:blueviolet;
-}
-
-#belakang {
-  background-color: aquamarine;
-}
-*/
 
 #depan {
   top: -70px;
