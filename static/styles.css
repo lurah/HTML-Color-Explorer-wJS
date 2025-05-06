@@ -60,6 +60,20 @@
     width: 233px;
 }
 
+.tabs {
+  --bulma-tabs-toggle-link-radius: 0px;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
+}
+
 .box.red {
   background-color: rgb(255,0,0);
 }
@@ -111,4 +125,9 @@
 
 #sldbox {
   width: 460px;
+}
+
+#name_color {
+  width: 300px;
+  border: 1px solid black;
 }

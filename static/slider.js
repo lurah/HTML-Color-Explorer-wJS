@@ -200,19 +200,36 @@ document.addEventListener('DOMContentLoaded', function() {
         updateBackground();
         updateKotakWarna();
     }
+    
+    function makeActive() {
+      const aktif = document.querySelector('.is-active');
+      aktif.classList.remove('is-active');
+      this.classList.add('is-active');
+      htmx.ajax('POST', '/name_color', {
+        target: '#name_color',
+        swap: 'innerHTML',
+        values: {
+            elementId: this.id
+        }
+    });
+    }
 
     // Attach event listeners
-    const sliders = document.getElementsByClassName('slider');
-    for (let i = 0; i < sliders.length; i++) {
-        const slider = sliders[i];
-        slider.addEventListener('input', updateRangeTrack);
-    }
+    const sliders = document.querySelectorAll('.slider');
+    sliders.forEach (slider => {
+      slider.addEventListener('input', updateRangeTrack);
+    })
+    
+    const tabItem = document.querySelectorAll('.tab_item');
+    tabItem.forEach (elem => {
+        elem.addEventListener('click', makeActive);
+    })
 
     updateRgb();
     updateHsl();
     updateKotakWarna();
     updateAlpha();
     updateBackground();
-
+    document.querySelector('.tab_item').classList.add('is-active');
   }
 )

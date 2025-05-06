@@ -1,11 +1,14 @@
 from fasthtml.common import *
+from nm_clr_list import col_family
 
 hdrs=(Link(rel='icon', type='image/png', href='static/school-bus.png'),
       Link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css',
       type='text/css'),
       #Link(rel='stylesheet', href='static/modbulma.css', type='text/css'),
       Link(rel='stylesheet', href='static/styles.css', type='text/css'),
-      Script(src='static/slider.js'))
+      Script(src='static/slider.js'),
+      #Script(src="https://kit.fontawesome.com/c880c9afbf.js", crossorigin="anonymous")
+    )
 
 
 app = FastHTML(pico=False, hdrs=hdrs)
@@ -82,12 +85,43 @@ def slider_hsl():
     )
     return respon
 
+def tab_item(judul:str):
+    respon = Li(
+        A(Span(f"{judul}")),
+        cls="tab_item",
+        id=f"{judul}"
+    )
+    return respon
+
+def name_color(all_lists:list, mrg_akhir=False):
+    tabs = []
+    for list in all_lists:
+        tabs.append(tab_item(list))
+    
+    respon = Div(
+        Ul(*tabs),
+        cls = "tabs is-toggle is-small mb-0" if mrg_akhir else "tabs is-toggle is-small"
+    )
+    return respon
+
+def name_color_all():
+    satu = col_family[:5]
+    dua = col_family[5:]
+
+    respon = Div(
+        name_color(satu,True),
+        name_color(dua),
+        Div("Ini yang Lain lagi", id="name_color", cls="title has-text-center"),
+        cls="column is-narrow"
+    )
+    return respon
+
 def kolom():
     respon = Div(
         slider_rgb(),
         slider_hsl(),
         full_box_color(),
-        Div("Ini yang Lain lagi", cls="title column is-narrow"),
+        name_color_all(),
         cls="columns is-mobile is-multiline is-centered"
     )
     return respon
@@ -95,5 +129,9 @@ def kolom():
 @app.get("/")
 def index():
     return H1("Judul-judulan", cls="title"), kolom()
+
+@app.post("/name_color")
+def name(elementId:str):
+    return H1(f"Ini JavaScript HTMX dari {elementId}")
 
 serve()
