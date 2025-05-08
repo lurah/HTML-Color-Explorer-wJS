@@ -72,6 +72,8 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
+  -webkit-appearance: textfield;
+  appearance: textfield;
 }
 
 .box.red {
@@ -79,7 +81,7 @@ input[type="number"] {
 }
 
 .box.green {
-  background-color: rgb(0,255,0);
+  background-color: rgb(0,127,0);
 }
 
 .box.blue {
@@ -94,12 +96,20 @@ input[type="number"] {
 
 .sepan {
   display: inline-block;
-  width: 3em;
+  width: 7.8em;
 }
 
 .box-color {
   margin-left: 10px;
   margin-right: 10px;
+}
+
+#ip_rgb, #ip_hsl {
+  width: 3em;
+}
+
+#hx_rgb, hx_hsl {
+  width: 5.8em;
 }
 
 #depan, #belakang {
@@ -128,6 +138,11 @@ input[type="number"] {
 }
 
 #name_color {
-  width: 300px;
-  border: 1px solid black;
+  width: 310px;
+}
+
+#grid_color {
+  margin: 0;
+  padding: 0px;
+  width: 290px;
 }

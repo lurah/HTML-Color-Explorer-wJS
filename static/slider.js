@@ -199,37 +199,58 @@ document.addEventListener('DOMContentLoaded', function() {
         else {updateAlpha(this);}
         updateBackground();
         updateKotakWarna();
+        updateRgbInput();
+        htmx.ajax('POST', '/name_color', {
+            target: '#name_color',
+            swap: 'innerHTML',
+            values: {
+                red: red,
+                green: green,
+                blue: blue}
+        });
     }
     
+    function updateRgbInput() {
+        document.querySelector('#ip_red').value = red;
+        document.querySelector('#ip_green').value = green;
+        document.querySelector('#ip_blue').value = blue;
+        document.querySelector('#ip_rgb').value = alpha;
+        document.querySelector('#ip_hue').value = hue;
+        document.querySelector('#ip_saturation').value = saturation;
+        document.querySelector('#ip_lightness').value = lightness;
+        document.querySelector('#ip_hsl').value = alpha;
+    }
+
     function makeActive() {
-      const aktif = document.querySelector('.is-active');
-      aktif.classList.remove('is-active');
-      this.classList.add('is-active');
-      htmx.ajax('POST', '/name_color', {
-        target: '#name_color',
-        swap: 'innerHTML',
-        values: {
-            elementId: this.id
-        }
-    });
+        const aktif = document.querySelector('.is-active');
+        aktif.classList.remove('is-active');
+        this.classList.add('is-active');
+        htmx.ajax('POST', '/grid_color', {
+            target: '#grid_color',
+            swap: 'innerHTML',
+            values: {
+                elementId: this.id
+            }
+        });
     }
 
     // Attach event listeners
-    const sliders = document.querySelectorAll('.slider');
-    sliders.forEach (slider => {
-      slider.addEventListener('input', updateRangeTrack);
-    })
+    function addTabItemLstnr() {
+      document.querySelectorAll('.tab_item').forEach (elem => {
+        elem.addEventListener('click', makeActive);})
+    }
+    document.querySelectorAll('.slider').forEach (slider => {
+      slider.addEventListener('input', updateRangeTrack);}
+    );
+    document.querySelector('#name_color').addEventListener(
+      'htmx:afterSwap', function() {addTabItemLstnr()}
+    );
     
-    const tabItem = document.querySelectorAll('.tab_item');
-    tabItem.forEach (elem => {
-        elem.addEventListener('click', makeActive);
-    })
-
     updateRgb();
     updateHsl();
     updateKotakWarna();
     updateAlpha();
     updateBackground();
-    document.querySelector('.tab_item').classList.add('is-active');
-  }
-)
+    updateRgbInput();
+    addTabItemLstnr();
+})

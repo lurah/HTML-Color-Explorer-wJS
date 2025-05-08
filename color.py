@@ -1,5 +1,5 @@
 from fasthtml.common import *
-from nm_clr_list import col_family
+import nm_clr_list as cl
 
 hdrs=(Link(rel='icon', type='image/png', href='static/school-bus.png'),
       Link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css',
@@ -26,27 +26,29 @@ def box_color():
 def input_color():
     respon = \
         Div(
-            Span(f"COLOR: ", cls="has-text-left is-size-7"),
-            Span(f"rgba(", cls="has-text-right is-size-7 sepan"),
-            Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="255",step="1",id="ip_blue",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka"),
-            Span(f")"),
-            P(),
-            Span(f"COLOR: ", cls="has-text-left is-size-7"),
-            Span(f"hsla(", cls="has-text-right is-size-7 sepan"),
-            Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka"),
-            Span(f","),
-            Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka"),
-            Span(f")")
+            Span(f"COLOR: rgba(", cls="has-text-right has-text-link is-size-7 sepan has-text-link"),
+            Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="255",step="1",id="ip_blue",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka has-text-link"),
+            Span(f")", cls="has-text-link"),
+            P(cls="mb-1"),
+            Span(f"HEX rgba(#", cls="has-text-right is-size-7 sepan has-text-link"),
+            Input(type="text",pattern="[0-9A-Fa-f]+",maxlength="8",id="hx_rgb", cls="has-text-link"),
+            Span(f")", cls="has-text-link"),
+            P(cls="mb-3"),
+            Span(f"COLOR: hsla(", cls="has-text-right is-size-7 sepan has-text-link"),
+            Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka has-text-link"),
+            Span(f",", cls="has-text-link"),
+            Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka has-text-link"),
+            Span(f")", cls="has-text-link")
         )
     return respon
 
@@ -85,33 +87,71 @@ def slider_hsl():
     )
     return respon
 
-def tab_item(judul:str):
+def rgb_distance(rgb1, rgb2): 
+        r1, g1, b1 = rgb1
+        r2, g2, b2 = rgb2
+        return math.sqrt((r1 - r2)**2 + (g1 - g2)**2 + (b1 - b2)**2)
+    
+def closest_named_color(target_rgb):
+        min = float("inf")
+        clst = None
+        for klr_i in cl.col_family:
+            for name, rgb in getattr(cl, klr_i).items():
+                distance = rgb_distance(target_rgb, rgb)
+                if distance < min:
+                    min = distance
+                    clst = name
+                    clst_pg = klr_i
+        return clst_pg, clst
+
+def tab_item(judul:str, aktif=False):
     respon = Li(
         A(Span(f"{judul}")),
-        cls="tab_item",
-        id=f"{judul}"
-    )
+        cls="tab_item" if not aktif else "tab_item is-active",
+        id=f"{judul}")
     return respon
 
-def name_color(all_lists:list, mrg_akhir=False):
+def tab_color(all_lists:list, clr_fam, mrg_akhir=False):
     tabs = []
     for list in all_lists:
-        tabs.append(tab_item(list))
-    
+        tab = tab_item(list) if list != clr_fam else tab_item(list, True)
+        tabs.append(tab)
     respon = Div(
         Ul(*tabs),
         cls = "tabs is-toggle is-small mb-0" if mrg_akhir else "tabs is-toggle is-small"
     )
     return respon
 
-def name_color_all():
-    satu = col_family[:5]
-    dua = col_family[5:]
-
+def grid_color(family):
+    kolor_list = getattr(cl,family)
+    node_color = []
+    for key,value in kolor_list.items():
+        fgd = (255 - value[0], 255 - value[1], 255 - value[2]) \
+            if family != "gray" else (255,255,255)
+        node_color.append(
+            Div(
+                f"{key}\nrgb{str(value).replace(" ","")}",
+                style=f"color: rgb{fgd}; background-color: rgb{value}",
+                cls="column has-text-centered is-size-7"
+            )
+        )
     respon = Div(
-        name_color(satu,True),
-        name_color(dua),
-        Div("Ini yang Lain lagi", id="name_color", cls="title has-text-center"),
+        *node_color,
+        id="grid_color",
+        cls="columns is-mobile is-multiline",
+    )
+    return respon
+
+def name_color_all(red, green, blue):
+    target_rgb = (red, green, blue)
+    clr_fam, _ = closest_named_color(target_rgb)
+        
+    respon = Div(
+        tab_color(cl.col_family[:5], clr_fam, True),
+        tab_color(cl.col_family[5:], clr_fam),
+        Div(f"List of named-color:", cls="has-text-weight-bold"),
+        grid_color(f"{clr_fam}"),
+        id="name_color",
         cls="column is-narrow"
     )
     return respon
@@ -121,17 +161,21 @@ def kolom():
         slider_rgb(),
         slider_hsl(),
         full_box_color(),
-        name_color_all(),
+        name_color_all(255,0,0),
         cls="columns is-mobile is-multiline is-centered"
     )
     return respon
 
 @app.get("/")
 def index():
-    return H1("Judul-judulan", cls="title"), kolom()
+    return H1("HTML Color Explorer", cls="title has-text-centered m-6"), kolom()
+
+@app.post("/grid_color")
+def grid(elementId:str):
+    return grid_color(elementId)
 
 @app.post("/name_color")
-def name(elementId:str):
-    return H1(f"Ini JavaScript HTMX dari {elementId}")
+def name(red:int, green:int, blue:int):
+    return name_color_all(red, green, blue)
 
 serve()
