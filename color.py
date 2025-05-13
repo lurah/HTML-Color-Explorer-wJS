@@ -26,29 +26,29 @@ def box_color():
 def input_color():
     respon = \
         Div(
-            Span(f"COLOR: rgba(", cls="has-text-right has-text-link is-size-7 sepan has-text-link"),
+            Span("COLOR: rgba(", cls="has-text-right has-text-link is-size-7 sepan has-text-link"),
             Input(type="number",min="0",max="255",step="1",id="ip_red",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="255",step="1",id="ip_green",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="255",step="1",id="ip_blue",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="1",step="0.01",id="ip_rgb",cls="angka has-text-link"),
-            Span(f")", cls="has-text-link"),
+            Span(")", cls="has-text-link"),
             P(cls="mb-1"),
-            Span(f"HEX rgba(#", cls="has-text-right is-size-7 sepan has-text-link"),
+            Span("HEX rgba(#", cls="has-text-right is-size-7 sepan has-text-link"),
             Input(type="text",pattern="[0-9A-Fa-f]+",maxlength="8",id="hx_rgb", cls="has-text-link"),
-            Span(f")", cls="has-text-link"),
+            Span(")", cls="has-text-link"),
             P(cls="mb-3"),
-            Span(f"COLOR: hsla(", cls="has-text-right is-size-7 sepan has-text-link"),
+            Span("COLOR: hsla(", cls="has-text-right is-size-7 sepan has-text-link"),
             Input(type="number",min="0",max="360",step="1",id="ip_hue",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="100",step="1",id="ip_saturation",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka has-text-link"),
-            Span(f",", cls="has-text-link"),
+            Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka has-text-link"),
-            Span(f")", cls="has-text-link")
+            Span(")", cls="has-text-link")
         )
     return respon
 
@@ -149,7 +149,7 @@ def name_color_all(red, green, blue):
     respon = Div(
         tab_color(cl.col_family[:5], clr_fam, True),
         tab_color(cl.col_family[5:], clr_fam),
-        Div(f"List of named-color:", cls="has-text-weight-bold"),
+        Div("List of named-color:", cls="has-text-weight-bold"),
         grid_color(f"{clr_fam}"),
         id="name_color",
         cls="column is-narrow"
