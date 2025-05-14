@@ -173,8 +173,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateKotakWarna() {
         const depan = document.querySelector('#depan');
         const belakang = document.querySelector('#belakang');
+        const cmpClr = document.querySelector('#cmp_clr');
+        const cmpTxt = document.querySelector('#cmp_txt');
+        const wadah = document.querySelector('#wadah');
+        
+        wadah.style.border = `2px solid rgb(${red},${green},${blue})`
         depan.style.background = `rgba(${red},${green},${blue},${alpha})`;
         belakang.style.background = `rgba(${255-red},${255-green},${255-blue},1)`;
+        cmpClr.innerHTML = `rgb(${red},${green},${blue})*`;
+        cmpClr.style.color = `rgb(${red},${green},${blue})`;
+        cmpTxt.style.color = `rgb(${255-red},${255-green},${255-blue})`;
     }
 
     function updateAlpha(elm = null) {
@@ -199,21 +207,30 @@ document.addEventListener('DOMContentLoaded', function() {
         else {updateAlpha(this);}
         updateBackground();
         updateKotakWarna();
-        updateRgbInput();
+        updateRangeInput();
         htmx.ajax('POST', '/name_color', {
             target: '#name_color',
-            swap: 'innerHTML',
+            swap: 'outerHTML',
             values: {
                 red: red,
                 green: green,
                 blue: blue}
         });
     }
+
+    function updateHex() {
+        let rgbhex = red.toString(16).toUpperCase().padStart(2,"0") +
+            green.toString(16).toUpperCase().padStart(2,"0") +
+            blue.toString(16).toUpperCase().padStart(2,"0");
+        let alpha_hex = parseInt((alpha * 256) - 1).toString(16).toUpperCase().padStart(2,"0");
+        document.querySelector('#hx_rgb').value = rgbhex + alpha_hex;
+    }
     
-    function updateRgbInput() {
+    function updateRangeInput() {
         document.querySelector('#ip_red').value = red;
         document.querySelector('#ip_green').value = green;
         document.querySelector('#ip_blue').value = blue;
+        updateHex();
         document.querySelector('#ip_rgb').value = alpha;
         document.querySelector('#ip_hue').value = hue;
         document.querySelector('#ip_saturation').value = saturation;
@@ -251,6 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateKotakWarna();
     updateAlpha();
     updateBackground();
-    updateRgbInput();
+    updateRangeInput();
     addTabItemLstnr();
 })

@@ -17,8 +17,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def box_color():
     respon = \
         Div(
-            Div(id="belakang"),
+            Div(
+                Div("rgb(255,255,255)*", id="cmp_clr"),
+                id="belakang"),
             Div(id="depan"),
+            Div("* Complement Color", id="cmp_txt"),
             id="wadah"), \
         slider("alpha", 1)
     return respon
@@ -37,7 +40,8 @@ def input_color():
             Span(")", cls="has-text-link"),
             P(cls="mb-1"),
             Span("HEX rgba(#", cls="has-text-right is-size-7 sepan has-text-link"),
-            Input(type="text",pattern="[0-9A-Fa-f]+",maxlength="8",id="hx_rgb", cls="has-text-link"),
+            Input(type="text",pattern="[0-9A-Fa-f]+",maxlength="8",id="hx_rgb", 
+                  cls="has-text-right has-text-link"),
             Span(")", cls="has-text-link"),
             P(cls="mb-3"),
             Span("COLOR: hsla(", cls="has-text-right is-size-7 sepan has-text-link"),

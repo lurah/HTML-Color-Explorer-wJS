@@ -74,6 +74,11 @@ input[type="number"] {
   -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
   -webkit-appearance: textfield;
   appearance: textfield;
+  border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+}
+
+input[type="text"] {
+  border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
 }
 
 .box.red {
@@ -108,29 +113,47 @@ input[type="number"] {
   width: 3em;
 }
 
-#hx_rgb, hx_hsl {
-  width: 5.8em;
-}
-
-#depan, #belakang {
-  width: 225px;
-  height: 80px;
-  position: relative;
-  margin: 15px;
-  border-radius: 15px;
-}
-
-#depan {
-  top: -70px;
-  left: 20px;
+#hx_rgb {
+  width: 5.9em;
 }
 
 #wadah {
-  height: 135px;
+  height: 175px;
   width: 275px;  
   margin-bottom: 10px;
   border-radius: 15px;
   border: 1px solid black;
+  position: relative;
+}
+
+#depan, #belakang, #cmp_clr, #cmp_txt {
+  position: absolute;
+}
+
+#depan, #belakang {
+  width: 210px;
+  height: 80px;
+  border-radius: 15px;
+}
+
+#belakang {
+  top: 15px;
+  left: 20px; 
+}
+
+#depan {
+  top: 50px;
+  left: 40px;
+}
+
+#cmp_clr {
+  top: 5px;
+  left: 50px;
+}
+
+#cmp_txt {
+  top: 140px;
+  left: 65px;
 }
 
 #sldbox {
