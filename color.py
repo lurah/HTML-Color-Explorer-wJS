@@ -142,7 +142,7 @@ def grid_color(family):
             Div(
                 f"{key}\nrgb{str(value).replace(" ","")}",
                 style=f"color: rgb{fgd}; background-color: rgb{value}",
-                cls="column has-text-centered is-size-7"
+                cls="column has-text-centered is-size-7 grid_color"
             )
         )
     respon = Div(
@@ -179,7 +179,7 @@ def kolom():
 
 @app.get("/")
 def index():
-    return H1("HTML Color Explorer", cls="title has-text-centered m-6"), kolom()
+    return H1("HTML Color Explorer", cls="title has-text-centered m-6 has-text-primary"), kolom()
 
 @app.post("/grid_color")
 def grid(elementId:str):

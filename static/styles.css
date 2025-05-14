@@ -71,14 +71,22 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
+  outline: none;
   -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
   -webkit-appearance: textfield;
   appearance: textfield;
   border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+  border-radius: 5px;
 }
 
 input[type="text"] {
+  outline: none;
   border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+  border-radius: 5px;
+}
+
+input[type="number"]:focus, input[type="text"]:focus {
+  border: 2px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
 }
 
 .box.red {

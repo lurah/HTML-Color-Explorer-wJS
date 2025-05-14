@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wadah.style.border = `2px solid rgb(${red},${green},${blue})`
         depan.style.background = `rgba(${red},${green},${blue},${alpha})`;
         belakang.style.background = `rgba(${255-red},${255-green},${255-blue},1)`;
-        cmpClr.innerHTML = `rgb(${red},${green},${blue})*`;
+        cmpClr.innerHTML = `rgb(${255-red},${255-green},${255-blue})*`;
         cmpClr.style.color = `rgb(${red},${green},${blue})`;
         cmpTxt.style.color = `rgb(${255-red},${255-green},${255-blue})`;
     }
@@ -251,17 +251,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function changeColor() {
+        const tulisan = this.innerHTML;
+        const match = tulisan.match(/rgb\((\d+),(\d+),(\d+)\)/);
+        red = parseInt(match[1]);
+        green = parseInt(match[2]);
+        blue = parseInt(match[3]);
+        
+        [hue, saturation, lightness] = rgbToHsl(red, green, blue);
+        updateRgb();
+        updateHsl();
+        updateKotakWarna();
+        updateBackground();
+        updateRangeInput();
+    }
+
     // Attach event listeners
     function addTabItemLstnr() {
         document.querySelectorAll('.tab_item').forEach (elem => {
             elem.addEventListener('click', makeActive);})
+    }
+    function addNmClrLstnr() {
+        document.querySelectorAll('.grid_color').forEach (elem => {
+            elem.addEventListener('click', changeColor);})
     }
     document.querySelectorAll('.slider').forEach (slider => {
         slider.addEventListener('input', updateRangeTrack);}
     );
     document.querySelector('#awal').addEventListener(
         'htmx:afterSwap', function(event) {
-            if (event.target.id == "name_color") {addTabItemLstnr()}}
+            if (event.target.id == "name_color") {
+                addTabItemLstnr();
+                addNmClrLstnr()}
+            else if (event.target.id == "grid_color") {addNmClrLstnr()}
+        }
     );
     
     updateRgb();
@@ -271,4 +294,5 @@ document.addEventListener('DOMContentLoaded', function() {
     updateBackground();
     updateRangeInput();
     addTabItemLstnr();
+    addNmClrLstnr();
 })
