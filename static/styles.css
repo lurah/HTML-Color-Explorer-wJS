@@ -57,7 +57,7 @@
 }
 
 .slider.alpha {
-    width: 233px;
+    width: 150px;
 }
 
 .tabs {
@@ -91,6 +91,10 @@ input[type="text"] {
 
 .box.blue {
   background-color: rgb(0,0,255);
+}
+
+.box.alpha {
+  padding: 5px 15px;
 }
 
 .angka {

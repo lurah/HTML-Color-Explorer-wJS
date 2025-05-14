@@ -23,7 +23,13 @@ def box_color():
             Div(id="depan"),
             Div("* Complement Color", id="cmp_txt"),
             id="wadah"), \
-        slider("alpha", 1)
+        Div(
+            Div(cls="column"),
+            Div(slider("alpha", 1), cls="column is-narrow"),
+            Div(cls="column"),
+            cls="columns is-mobile"
+        )
+        
     return respon
         
 def input_color():
@@ -166,7 +172,8 @@ def kolom():
         slider_hsl(),
         full_box_color(),
         name_color_all(255,0,0),
-        cls="columns is-mobile is-multiline is-centered"
+        cls="columns is-mobile is-multiline is-centered",
+        id="awal"
     )
     return respon
 

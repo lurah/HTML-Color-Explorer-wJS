@@ -253,14 +253,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Attach event listeners
     function addTabItemLstnr() {
-      document.querySelectorAll('.tab_item').forEach (elem => {
-        elem.addEventListener('click', makeActive);})
+        document.querySelectorAll('.tab_item').forEach (elem => {
+            elem.addEventListener('click', makeActive);})
     }
     document.querySelectorAll('.slider').forEach (slider => {
-      slider.addEventListener('input', updateRangeTrack);}
+        slider.addEventListener('input', updateRangeTrack);}
     );
-    document.querySelector('#name_color').addEventListener(
-      'htmx:afterSwap', function() {addTabItemLstnr()}
+    document.querySelector('#awal').addEventListener(
+        'htmx:afterSwap', function(event) {
+            if (event.target.id == "name_color") {addTabItemLstnr()}}
     );
     
     updateRgb();
