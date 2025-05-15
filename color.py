@@ -4,11 +4,8 @@ import nm_clr_list as cl
 hdrs=(Link(rel='icon', type='image/png', href='static/school-bus.png'),
       Link(rel='stylesheet', href='https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css',
       type='text/css'),
-      #Link(rel='stylesheet', href='static/modbulma.css', type='text/css'),
       Link(rel='stylesheet', href='static/styles.css', type='text/css'),
-      Script(src='static/slider.js'),
-      #Script(src="https://kit.fontawesome.com/c880c9afbf.js", crossorigin="anonymous")
-    )
+      Script(src='static/slider.js'))
 
 
 app = FastHTML(pico=False, hdrs=hdrs)
@@ -17,9 +14,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def box_color():
     respon = \
         Div(
-            Div(
-                Div("rgb(255,255,255)*", id="cmp_clr"),
-                id="belakang"),
+            Div(Div("rgb(255,255,255)*", id="cmp_clr"),id="belakang"),
             Div(id="depan"),
             Div("* Complement Color", id="cmp_txt"),
             id="wadah"), \
@@ -27,9 +22,7 @@ def box_color():
             Div(cls="column"),
             Div(slider("alpha", 1), cls="column is-narrow"),
             Div(cls="column"),
-            cls="columns is-mobile"
-        )
-        
+            cls="columns is-mobile")
     return respon
         
 def input_color():
@@ -58,16 +51,14 @@ def input_color():
             Input(type="number",min="0",max="100",step="1",id="ip_lightness",cls="angka has-text-link"),
             Span(",", cls="has-text-link"),
             Input(type="number",min="0",max="1",step="0.01",id="ip_hsl",cls="angka has-text-link"),
-            Span(")", cls="has-text-link")
-        )
+            Span(")", cls="has-text-link") )
     return respon
 
 def full_box_color():
     respon = Div(
         box_color(),
         input_color(),
-        cls="column is-narrow box-color"
-    )    
+        cls="column is-narrow box-color")    
     return respon
     
 def slider(judul:str, maks):
@@ -84,8 +75,7 @@ def slider_rgb():
         slider("red", 255),
         slider("green", 255),
         slider("blue", 255),
-        cls="column is-narrow"
-    )
+        cls="column is-narrow")
     return respon
 
 def slider_hsl():
@@ -93,26 +83,25 @@ def slider_hsl():
         slider("hue", 360),
         slider("saturation", 100),
         slider("lightness", 100),
-        cls="column is-narrow"
-    )
+        cls="column is-narrow")
     return respon
 
 def rgb_distance(rgb1, rgb2): 
-        r1, g1, b1 = rgb1
-        r2, g2, b2 = rgb2
-        return math.sqrt((r1 - r2)**2 + (g1 - g2)**2 + (b1 - b2)**2)
+    r1, g1, b1 = rgb1
+    r2, g2, b2 = rgb2
+    return math.sqrt((r1 - r2)**2 + (g1 - g2)**2 + (b1 - b2)**2)
     
 def closest_named_color(target_rgb):
-        min = float("inf")
-        clst = None
-        for klr_i in cl.col_family:
-            for name, rgb in getattr(cl, klr_i).items():
-                distance = rgb_distance(target_rgb, rgb)
-                if distance < min:
-                    min = distance
-                    clst = name
-                    clst_pg = klr_i
-        return clst_pg, clst
+    min = float("inf")
+    clst = None
+    for klr_i in cl.col_family:
+        for name, rgb in getattr(cl, klr_i).items():
+            distance = rgb_distance(target_rgb, rgb)
+            if distance < min:
+                min = distance
+                clst = name
+                clst_pg = klr_i
+    return clst_pg, clst
 
 def tab_item(judul:str, aktif=False):
     respon = Li(
@@ -128,8 +117,7 @@ def tab_color(all_lists:list, clr_fam, mrg_akhir=False):
         tabs.append(tab)
     respon = Div(
         Ul(*tabs),
-        cls = "tabs is-toggle is-small mb-0" if mrg_akhir else "tabs is-toggle is-small"
-    )
+        cls = "tabs is-toggle is-small mb-0" if mrg_akhir else "tabs is-toggle is-small")
     return respon
 
 def grid_color(family):
@@ -142,14 +130,11 @@ def grid_color(family):
             Div(
                 f"{key}\nrgb{str(value).replace(" ","")}",
                 style=f"color: rgb{fgd}; background-color: rgb{value}",
-                cls="column has-text-centered is-size-7 grid_color"
-            )
-        )
+                cls="column has-text-centered is-size-7 grid_color") )
     respon = Div(
         *node_color,
         id="grid_color",
-        cls="columns is-mobile is-multiline",
-    )
+        cls="columns is-mobile is-multiline")
     return respon
 
 def name_color_all(red, green, blue):
@@ -157,13 +142,13 @@ def name_color_all(red, green, blue):
     clr_fam, _ = closest_named_color(target_rgb)
         
     respon = Div(
+        Div("Color Family", cls="has-text-weight-bold"),
         tab_color(cl.col_family[:5], clr_fam, True),
         tab_color(cl.col_family[5:], clr_fam),
         Div("List of named-color:", cls="has-text-weight-bold"),
         grid_color(f"{clr_fam}"),
         id="name_color",
-        cls="column is-narrow"
-    )
+        cls="column is-narrow")
     return respon
 
 def kolom():
@@ -173,13 +158,14 @@ def kolom():
         full_box_color(),
         name_color_all(255,0,0),
         cls="columns is-mobile is-multiline is-centered",
-        id="awal"
-    )
+        id="awal")
     return respon
 
 @app.get("/")
 def index():
-    return H1("HTML Color Explorer", cls="title has-text-centered m-6 has-text-primary"), kolom()
+    return H1("HTML Color Explorer", 
+               cls="title has-text-centered m-6 has-text-primary"), \
+           kolom()
 
 @app.post("/grid_color")
 def grid(elementId:str):
