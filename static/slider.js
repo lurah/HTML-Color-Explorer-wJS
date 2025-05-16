@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else { 
             elm = document.querySelector('.slider.alpha');
             elm.value = alpha;}
-        elm.nextElementSibling.innerHTML = alpha;
+        elm.nextElementSibling.innerHTML = alpha.toFixed(2);
         elm.style.background = gradBackground(alpha * 100); }
 
     function updateNameColor() {
@@ -253,6 +253,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateMinor();
                     updateNameColor();}}} }
 
+    function updateHexInput() {
+        const match = this.value.match(/\b[0-9A-Fa-f]{1,8}\b/);
+        if (match) {
+            const hexa = match[0].toUpperCase();
+            const parseColor = (start, length = 2) => parseInt(hexa.slice(start, start + length), 16);
+
+            red = parseColor(0);
+            if (hexa.length > 2) green = parseColor(2, hexa.length >= 4 ? 2 : 1);
+            if (hexa.length > 4) blue = parseColor(4, hexa.length >= 6 ? 2 : 1);
+            if (hexa.length > 6) alpha = ((parseColor(6, hexa.length === 8 ? 2 : 1))/255).toFixed(2);
+            else alpha = 1;
+            [hue, saturation, lightness] = rgbToHsl(red, green, blue);
+            updateMayor();
+            updateAlpha();
+            updateNameColor();} }
+
     function makeActive() {
         const aktif = document.querySelector('.is-active');
         aktif.classList.remove('is-active');
@@ -286,6 +302,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.angka').forEach (angka => {
         angka.addEventListener('change', updateInputField);});
+    
+    document.querySelector('#hx_rgb').addEventListener('change', updateHexInput);
 
     document.querySelector('#awal').addEventListener(
         'htmx:afterSwap', function(event) {
