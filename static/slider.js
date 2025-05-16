@@ -17,32 +17,32 @@ document.addEventListener('DOMContentLoaded', function() {
         let r, g, b;
         // If saturation is 0, the color is grayscale (R, G, B are all equal to L)
         if (s === 0) {
-          r = g = b = l;} // R, G, B are equal to L
+            r = g = b = l;} // R, G, B are equal to L
         else {
-          // Calculate intermediate values for conversion
-          const chroma = (1 - Math.abs(2 * l - 1)) * s;
-          const hueSegment = h * 6;
-          const x = chroma * (1 - Math.abs((hueSegment % 2) - 1));
-          const lightnessAdjustment = l - chroma / 2;
+            // Calculate intermediate values for conversion
+            const chroma = (1 - Math.abs(2 * l - 1)) * s;
+            const hueSegment = h * 6;
+            const x = chroma * (1 - Math.abs((hueSegment % 2) - 1));
+            const lightnessAdjustment = l - chroma / 2;
       
-          // Determine the RGB values based on the hue segment
-          if (hueSegment >= 0 && hueSegment < 1) {
-            [r, g, b] = [chroma, x, 0];}
-          else if (hueSegment >= 1 && hueSegment < 2) {
-            [r, g, b] = [x, chroma, 0];}
-          else if (hueSegment >= 2 && hueSegment < 3) {
-            [r, g, b] = [0, chroma, x];}
-          else if (hueSegment >= 3 && hueSegment < 4) {
-            [r, g, b] = [0, x, chroma];}
-          else if (hueSegment >= 4 && hueSegment < 5) {
-            [r, g, b] = [x, 0, chroma];}
-          else if (hueSegment >= 5 && hueSegment < 6) {
-            [r, g, b] = [chroma, 0, x];}
+            // Determine the RGB values based on the hue segment
+            if (hueSegment >= 0 && hueSegment < 1) {
+                [r, g, b] = [chroma, x, 0];}
+            else if (hueSegment >= 1 && hueSegment < 2) {
+                [r, g, b] = [x, chroma, 0];}
+            else if (hueSegment >= 2 && hueSegment < 3) {
+                [r, g, b] = [0, chroma, x];}
+            else if (hueSegment >= 3 && hueSegment < 4) {
+                [r, g, b] = [0, x, chroma];}
+            else if (hueSegment >= 4 && hueSegment < 5) {
+                [r, g, b] = [x, 0, chroma];}
+            else if (hueSegment >= 5 && hueSegment < 6) {
+                [r, g, b] = [chroma, 0, x];}
       
-          // Add the lightness adjustment and scale R, G, B to the range [0, 255]
-          r = (r + lightnessAdjustment) * 255;
-          g = (g + lightnessAdjustment) * 255;
-          b = (b + lightnessAdjustment) * 255;}
+            // Add the lightness adjustment and scale R, G, B to the range [0, 255]
+            r = (r + lightnessAdjustment) * 255;
+            g = (g + lightnessAdjustment) * 255;
+            b = (b + lightnessAdjustment) * 255;}
       
         // Round R, G, B values to the nearest integer
         r = Math.round(r);
@@ -67,23 +67,23 @@ document.addEventListener('DOMContentLoaded', function() {
       
         // If max and min are the same, the color is grayscale (saturation is 0)
         if (max === min) {
-          h = 0; // Hue is 0 for grayscale
-          s = 0;} // Saturation is 0
+            h = 0; // Hue is 0 for grayscale
+            s = 0;} // Saturation is 0
         else {
-          const delta = max - min;
-          // Calculate Saturation (S)
-          s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-          // Calculate Hue (H)
-          switch (max) {
-            case r:
-              h = (g - b) / delta + (g < b ? 6 : 0);
-              break;
-            case g:
-              h = (b - r) / delta + 2;
-              break;
-            case b:
-              h = (r - g) / delta + 4;
-              break;
+            const delta = max - min;
+            // Calculate Saturation (S)
+            s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+            // Calculate Hue (H)
+            switch (max) {
+                case r:
+                h = (g - b) / delta + (g < b ? 6 : 0);
+                break;
+                case g:
+                h = (b - r) / delta + 2;
+                break;
+                case b:
+                h = (r - g) / delta + 4;
+                break;
           }
       
           // Convert Hue to degrees [0, 360]
@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let rgbhex = red.toString(16).toUpperCase().padStart(2,"0") +
             green.toString(16).toUpperCase().padStart(2,"0") +
             blue.toString(16).toUpperCase().padStart(2,"0");
-        let alpha_hex = parseInt((alpha * 256) - 1).toString(16).toUpperCase().padStart(2,"0");
+        let alpha_hex = parseInt(((alpha * 256) - 1)).toString(16).toUpperCase().padStart(2,"0");
         document.querySelector('#hx_rgb').value = rgbhex + alpha_hex; }
     
     function updateRangeInput() {
@@ -225,29 +225,33 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNameColor(); }
 
     function updateInputField() {
-        const { id, value } = this;
-        if (["ip_red", "ip_green", "ip_blue"].includes(id) && 0 <= value && value < 256) {
-            if (id === "ip_red") red = value;
-            else if (id === "ip_green") green = value;
-            else if (id === "ip_blue") blue = value;
-            [hue, saturation, lightness] = rgbToHsl(red, green, blue);
-            updateMayor();
-            updateNameColor();}
-        else if (["ip_hue", "ip_saturation", "ip_lightness"].includes(id)) {
-            if (id === "ip_hue" && 0 <= value && value <= 360) {
-                hue = value;
-                [red, green, blue] = hslToRgb(hue, saturation, lightness);}
-            else if (0 <= value && value <= 100) {
-                if (id === "ip_saturation") saturation = value;
-                else if (id === "ip_lightness") lightness = value;
-                [red, green, blue] = hslToRgb(hue, saturation, lightness);}
-            updateMayor();
-            updateNameColor();}
-        else if (["ip_rgb", "ip_hsl"].includes(id) && 0 <= value && value <= 1) {
-            alpha = value;
-            updateAlpha();
-            updateMinor();
-            updateNameColor();} }
+        const id = this.id;
+        if (["ip_red","ip_green","ip_blue","ip_hue","ip_saturation","ip_lightness"].includes(id)) {
+            const value = parseInt(this.value);
+            if (value != NaN) {
+                if (["ip_red", "ip_green", "ip_blue"].includes(id) && 0 <= value && value < 256) {
+                    if (id === "ip_red") red = value;
+                    else if (id === "ip_green") green = value;
+                    else if (id === "ip_blue") blue = value;
+                    [hue, saturation, lightness] = rgbToHsl(red, green, blue);}
+                else if (["ip_hue", "ip_saturation", "ip_lightness"].includes(id)) {
+                    if (id === "ip_hue" && 0 <= value && value <= 360) {
+                        hue = value;
+                        [red, green, blue] = hslToRgb(hue, saturation, lightness);}
+                    else if (0 <= value && value <= 100) {
+                        if (id === "ip_saturation") saturation = value;
+                        else if (id === "ip_lightness") lightness = value;
+                        [red, green, blue] = hslToRgb(hue, saturation, lightness);}}
+                updateMayor();
+                updateNameColor();}}
+        else if (["ip_rgb", "ip_hsl"].includes(id)) {
+            const value = parseFloat(this.value);
+            if (value != NaN) {
+                if (0 <= value && value <= 1) {
+                    alpha = value;
+                    updateAlpha();
+                    updateMinor();
+                    updateNameColor();}}} }
 
     function makeActive() {
         const aktif = document.querySelector('.is-active');
