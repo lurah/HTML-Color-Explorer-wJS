@@ -52,14 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Return RGB values as an array
         return [r, g, b]; }
 
-    function rgbToHsl(r, g, b) {
+    function rgbToHsl(rx, gx, bx) {
         // Normalize R, G, B values to the range [0, 1]
+        const r = rx/255; const g = gx/255; const b = bx/255;
               
         // Find the maximum and minimum values among R, G, B
-        const max = Math.max(r/255, g/255, b/255);
-        const min = Math.min(r/255, g/255, b/255);
-      
-        let h; let s; let l;
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        
+        let h = 0; let s = 0; let l = 0;
       
         // Calculate Lightness (L)
         l = (max + min) / 2;
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Calculate Saturation (S)
             s = l > 0.5 ? delta / (2 - max - min) : delta / (max + min);
             // Calculate Hue (H)
+            
             switch (max) {
                 case r:
                     h = (g - b) / delta + (g < b ? 6 : 0);
@@ -85,6 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     break; }
       
             // Convert Hue to degrees [0, 360]
+            
             h /= 6; }
       
         s *= 100; l *= 100; // Convert S and L to percentages [0, 100]
@@ -132,7 +135,8 @@ document.addEventListener('DOMContentLoaded', function() {
             else if (elm.classList.contains('green')) {green = value;}
             else {blue = value;}
             [hue, saturation, lightness] = rgbToHsl(red, green, blue);}
-        
+            
+            
         const rgb = [red, green, blue];
         let slideRgb;
         for (let i=0; i < 3; i++) {
