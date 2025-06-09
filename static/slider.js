@@ -262,8 +262,9 @@ document.addEventListener('DOMContentLoaded', function() {
             red = parseColor(0);
             if (hexa.length > 2) green = parseColor(2, hexa.length >= 4 ? 2 : 1);
             if (hexa.length > 4) blue = parseColor(4, hexa.length >= 6 ? 2 : 1);
-            if (hexa.length > 6) alpha = ((parseColor(6, hexa.length === 8 ? 2 : 1))/255).toFixed(2);
+            if (hexa.length > 6) alpha = parseFloat(((parseColor(6, hexa.length === 8 ? 2 : 1))/255).toFixed(2));
             else alpha = 1;
+            
             [hue, saturation, lightness] = rgbToHsl(red, green, blue);
             updateMayor();
             updateAlpha();
