@@ -1,4 +1,4 @@
-from fasthtml.common import *
+from fasthtml.common import * # type: ignore
 import nm_clr_list as cl
 
 hdrs = (
@@ -9,6 +9,7 @@ hdrs = (
         type="text/css",
     ),
     Link(rel="stylesheet", href="static/styles.css", type="text/css"),
+    Script(code="import tinycolor from 'https://esm.sh/tinycolor2';", type="module"),
     Script(src="static/slider.js"),
 )
 
@@ -241,15 +242,50 @@ def name_color_all(red, green, blue):
     )
     return respon
 
+def grid_bk_color():
+    
+    respon = Div("Test", id="bk_color", cls="column is-narrow")
+    return respon
+
+def wcga_color():
+    judul = "The Web Content Accessibility Guidelines (WCAG) Contrast Ratios AA compliance:"
+    content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor \
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud \
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure \
+        dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit \
+        anim id est laborum"
+    
+    respon = Div(
+        Div(content, cls="box is-size-7", id="wcga_content", style="background-color: pink"),
+        Div(judul,
+            Span(" 4.1", id="wcidx"),
+            cls="box has-text-primary has-text-weight-bold is-size-7"
+        ),
+        Div(
+            "Sugested ",
+            Span("background", id="bk_color"),
+            Span(" color"),
+            cls = "has-text-weight-bold is-size-7 mt-5"
+        ),
+        grid_bk_color(),
+        cls = "column is-narrow mt-2 ml-5",
+        id = "wcga_color",
+    )
+    return respon
 
 def kolom():
     respon = Div(
         slider_rgb(),
         slider_hsl(),
         full_box_color(),
-        name_color_all(255, 0, 0),
         cls="columns is-mobile is-multiline is-centered",
         id="awal",
+    ), Div (
+        name_color_all(255, 0, 0),
+        wcga_color(),
+        cls="columns is-mobile is-multiline is-centered",
+        id="oawal",
     )
     return respon
 

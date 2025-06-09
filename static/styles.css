@@ -168,10 +168,6 @@ input[type="number"]:focus, input[type="text"]:focus {
   left: 65px;
 }
 
-#sldbox {
-  width: 460px;
-}
-
 #name_color {
   width: 310px;
 }
@@ -180,4 +176,8 @@ input[type="number"]:focus, input[type="text"]:focus {
   margin: 0;
   padding: 0px;
   width: 290px;
+}
+
+#wcga_color {
+  width: 400px;
 }

@@ -8,6 +8,51 @@ document.addEventListener('DOMContentLoaded', function() {
     const rgbSelector = document.querySelectorAll('.slider.red, .slider.blue, .slider.green');
     const hslSelector = document.querySelectorAll('.slider.hue, .slider.saturation, .slider.lightness');
     
+    function rgbNormalizedToHex(rgb) {
+        const [r, g, b] = rgb.map(c => Math.round(c * 255));
+        return `${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}
+                ${b.toString(16).padStart(2, '0')}`;
+    }
+
+    function findACompliantBackgrounds(step = 32) {
+        const fgRgb = [ red/255.0, green/255.0, blue/255.0];
+        const compliantColors = [];
+        const minRatio = 7.1;
+        const maxRatio = 10.1;
+
+        for (let r = 0; r < 256; r += step) {
+            for (let g = 0; g < 256; g += step) {
+                for (let b = 0; b < 256; b += step) {
+                    const bgRgb = [r / 255.0, g / 255.0, b / 255.0];
+
+                    const ratio = tinycolor.readability(fgRgb, bgRgb); 
+
+                    if (minRatio <= ratio && ratio <= maxRatio) {
+                        const bgHex = rgbNormalizedToHex(bgRgb);
+                        compliantColors.push({
+                            "hex": bgHex,
+                            "rgb": [r, g, b],
+                            "cRatio": Math.round(ratio * 100) / 100
+                        });
+                    }
+                }
+            }
+        }
+
+        const grouped = compliantColors.reduce((acc, item) => {
+            const key = item.hex.slice(0,4);
+            if (!acc[key] || parseInt(item.hex.slice(-2), 16) > parseInt(acc[key].hex.slice(-2), 16)) {
+                acc[key] = item;
+            }
+            return acc;
+        }, {})
+
+
+        const sortedColors = Object.values(grouped).sort((a,b) => a.hex.localCompare(b.hex));
+        
+        return sortedColors;
+    }
+
     function hslToRgb(hx, sx, lx) {
         // Normalize H, S, L values to the range [0, 1]
         // Hue is normalized from [0, 360] to [0, 1]
