@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
 
     let red = 255; let green = 0; let blue = 0;
@@ -8,24 +7,50 @@ document.addEventListener('DOMContentLoaded', function() {
     const rgbSelector = document.querySelectorAll('.slider.red, .slider.blue, .slider.green');
     const hslSelector = document.querySelectorAll('.slider.hue, .slider.saturation, .slider.lightness');
     
+    function getRGBFromColorName(colorName) {
+        let div = document.createElement("div");
+        div.style.color = colorName;
+        document.body.appendChild(div);
+        let rgbValue = window.getComputedStyle(div).color;
+        document.body.removeChild(div);
+        return rgbValue;
+    }
+
     function rgbNormalizedToHex(rgb) {
         const [r, g, b] = rgb.map(c => Math.round(c * 255));
         return `${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}
                 ${b.toString(16).padStart(2, '0')}`;
     }
 
+    function getLuminance(rgb) {
+        let [r, g, b] = rgb.map(v => {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    function getContrastRatio(rgb1, rgb2) {
+        let lum1 = getLuminance(rgb1);
+        let lum2 = getLuminance(rgb2);
+
+        let contrastRatio = (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+    
+        return contrastRatio.toFixed(2); // Round to two decimals
+    }
+
     function findACompliantBackgrounds(step = 32) {
-        const fgRgb = [ red/255.0, green/255.0, blue/255.0];
+        const fgRgb = [ red, green, blue];
         const compliantColors = [];
-        const minRatio = 7.1;
+        const minRatio = 5.1;
         const maxRatio = 10.1;
 
         for (let r = 0; r < 256; r += step) {
             for (let g = 0; g < 256; g += step) {
                 for (let b = 0; b < 256; b += step) {
-                    const bgRgb = [r / 255.0, g / 255.0, b / 255.0];
+                    const bgRgb = [r, g, b];
 
-                    const ratio = tinycolor.readability(fgRgb, bgRgb); 
+                    const ratio = getContrastRatio(fgRgb, bgRgb); 
 
                     if (minRatio <= ratio && ratio <= maxRatio) {
                         const bgHex = rgbNormalizedToHex(bgRgb);
@@ -47,9 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return acc;
         }, {})
 
-
-        const sortedColors = Object.values(grouped).sort((a,b) => a.hex.localCompare(b.hex));
-        
+        const sortedColors = Object.values(grouped).sort((a,b) => a.hex.localeCompare(b.hex));
         return sortedColors;
     }
 
@@ -62,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let r; let g; let b;
         // If saturation is 0, the color is grayscale (R, G, B are all equal to L)
         if (s === 0) {
-            r = g = b = l;} // R, G, B are equal to L
+            r = g = b = l; // R, G, B are equal to L
+        }
         else {
             // Calculate intermediate values for conversion
             const chroma = (1 - Math.abs(2 * l - 1)) * s;
@@ -95,7 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
         b = Math.round(b);
       
         // Return RGB values as an array
-        return [r, g, b]; }
+        return [r, g, b];
+    }
 
     function rgbToHsl(rx, gx, bx) {
         // Normalize R, G, B values to the range [0, 1]
@@ -113,7 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // If max and min are the same, the color is grayscale (saturation is 0)
         if (max === min) {
             h = 0; // Hue is 0 for grayscale
-            s = 0;} // Saturation is 0
+            s = 0; // Saturation is 0
+        }
         else {
             const delta = max - min;
             // Calculate Saturation (S)
@@ -148,13 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
         s = Math.round(s);
         l = Math.round(l);
         
-        return [h, s, l]; }
+        return [h, s, l];
+    }
     
     function gradBackground(persen) {
         const bgValue = `linear-gradient(to right,
                          var(--bulma-text-light) 0%, var(--bulma-text-light) ${persen}%,
                          transparent ${persen}%, transparent 100%)`;
-        return bgValue; }
+        return bgValue;
+    }
 
     function updateHsl(elm = null) {
         if (elm != null) {
@@ -162,7 +190,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (elm.classList.contains('hue')) {hue = value;}
             else if (elm.classList.contains('saturation')) {saturation = value;}
             else {lightness = value;}
-            [red, green, blue] = hslToRgb(hue, saturation, lightness);}
+            [red, green, blue] = hslToRgb(hue, saturation, lightness);
+        }
 
         const hsl = [hue, saturation, lightness];
         let slideHsl;
@@ -171,7 +200,9 @@ document.addEventListener('DOMContentLoaded', function() {
             slideHsl.value = hsl[i];
             slideHsl.style.background = gradBackground((hsl[i] / slideHsl.max) * 100);
             if (i === 0) {slideHsl.nextElementSibling.innerHTML = `${hsl[i]} deg`;}
-            else {slideHsl.nextElementSibling.innerHTML = `${hsl[i]} %`;}} }
+            else {slideHsl.nextElementSibling.innerHTML = `${hsl[i]} %`;}
+        }
+    }
 
     function updateRgb(elm = null) {
         if (elm != null) {
@@ -179,8 +210,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (elm.classList.contains('red')) {red = value;}
             else if (elm.classList.contains('green')) {green = value;}
             else {blue = value;}
-            [hue, saturation, lightness] = rgbToHsl(red, green, blue);}
-            
+            [hue, saturation, lightness] = rgbToHsl(red, green, blue);
+        }
             
         const rgb = [red, green, blue];
         let slideRgb;
@@ -189,14 +220,18 @@ document.addEventListener('DOMContentLoaded', function() {
             slideRgb.value = rgb[i];
             slideRgb.style.background = gradBackground((rgb[i] / slideRgb.max) * 100);
             slideRgb.nextElementSibling.innerHTML = 
-              `Dec: ${rgb[i]}, Hex: ${rgb[i].toString(16).toUpperCase()}`;} }
+              `Dec: ${rgb[i]}, Hex: ${rgb[i].toString(16).toUpperCase()}`;
+        }
+    }
 
     function updateBackground() {
         const warnaBackground = document.querySelectorAll('.box.hue, .box.saturation, \
               .box.lightness, .box.alpha');
         warnaBackground.forEach (elm => {
             elm.style.background = `rgb(${red}, ${green}, ${blue})`;
-        }) }
+            }
+        )
+    }
     
     function updateKotakWarna() {
         const depan = document.querySelector('#depan');
@@ -210,14 +245,16 @@ document.addEventListener('DOMContentLoaded', function() {
         belakang.style.background = `rgba(${255-red},${255-green},${255-blue},1)`;
         cmpClr.innerHTML = `rgb(${255-red},${255-green},${255-blue})*`;
         cmpClr.style.color = `rgb(${red},${green},${blue})`;
-        cmpTxt.style.color = `rgb(${255-red},${255-green},${255-blue})`; }
+        cmpTxt.style.color = `rgb(${255-red},${255-green},${255-blue})`;
+    }
     
     function updateHex() {
         const rgbhex = red.toString(16).toUpperCase().padStart(2,"0") +
             green.toString(16).toUpperCase().padStart(2,"0") +
             blue.toString(16).toUpperCase().padStart(2,"0");
         const alpha_hex = parseInt(((alpha * 256) - 1)).toString(16).toUpperCase().padStart(2,"0");
-        document.querySelector('#hx_rgb').value = rgbhex + alpha_hex; }
+        document.querySelector('#hx_rgb').value = rgbhex + alpha_hex;
+    }
     
     function updateRangeInput() {
         document.querySelector('#ip_red').value = red;
@@ -228,26 +265,32 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('#ip_hue').value = hue;
         document.querySelector('#ip_saturation').value = saturation;
         document.querySelector('#ip_lightness').value = lightness;
-        document.querySelector('#ip_hsl').value = alpha; }
+        document.querySelector('#ip_hsl').value = alpha;
+    }
 
     function updateMinor() {
         updateBackground();
         updateKotakWarna();
-        updateRangeInput(); }
+        updateRangeInput();
+        updateWcgaColor();
+    }
 
     function updateMayor() {
         updateRgb();
         updateHsl();
-        updateMinor(); }
+        updateMinor();
+    }
     
     function updateAlpha(elmx = null) {
         let elm = elmx;
         if (elm != null) { alpha = parseFloat(elm.value);}
         else { 
             elm = document.querySelector('.slider.alpha');
-            elm.value = alpha;}
+            elm.value = alpha;
+        }
         elm.nextElementSibling.innerHTML = alpha.toFixed(2);
-        elm.style.background = gradBackground(alpha * 100); }
+        elm.style.background = gradBackground(alpha * 100);
+    }
 
     function updateNameColor() {
         htmx.ajax('POST', '/name_color', {
@@ -256,18 +299,24 @@ document.addEventListener('DOMContentLoaded', function() {
             values: {
                 red: red,
                 green: green,
-                blue: blue}}); }
+                blue: blue}
+        });
+    }
 
     function updateRangeTrack() {
         if (this.matches('.red, .green, .blue')) {
             updateRgb(this);
-            updateHsl();} 
+            updateHsl();
+        } 
         else if (this.matches('.hue, .saturation, .lightness')) {
             updateHsl(this);
-            updateRgb();}
+            updateRgb();
+        }
         else {updateAlpha(this);}
+        
         updateMinor();
-        updateNameColor(); }
+        updateNameColor();
+    }
 
     function updateInputField() {
         const id = this.id;
@@ -278,17 +327,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (id === "ip_red") red = value;
                     else if (id === "ip_green") green = value;
                     else if (id === "ip_blue") blue = value;
-                    [hue, saturation, lightness] = rgbToHsl(red, green, blue);}
+                    [hue, saturation, lightness] = rgbToHsl(red, green, blue);
+                }
                 else if (["ip_hue", "ip_saturation", "ip_lightness"].includes(id)) {
                     if (id === "ip_hue" && 0 <= value && value <= 360) {
                         hue = value;
-                        [red, green, blue] = hslToRgb(hue, saturation, lightness);}
+                        [red, green, blue] = hslToRgb(hue, saturation, lightness);
+                    }
                     else if (0 <= value && value <= 100) {
                         if (id === "ip_saturation") saturation = value;
                         else if (id === "ip_lightness") lightness = value;
-                        [red, green, blue] = hslToRgb(hue, saturation, lightness);}}
+                        [red, green, blue] = hslToRgb(hue, saturation, lightness);
+                    }
+                }
                 updateMayor();
-                updateNameColor();}}
+                updateNameColor();
+            }
+        }
         else if (["ip_rgb", "ip_hsl"].includes(id)) {
             const value = parseFloat(this.value);
             if (value !== NaN) {
@@ -296,38 +351,95 @@ document.addEventListener('DOMContentLoaded', function() {
                     alpha = value;
                     updateAlpha();
                     updateMinor();
-                    updateNameColor();}}} }
+                    updateNameColor();
+                }
+            }
+        }
+    }
 
     function updateHexInput() {
         const match = this.value.match(/\b[0-9A-Fa-f]{1,8}\b/);
         if (match) {
             const hexa = match[0].toUpperCase();
-            const parseColor = (start, length = 2) => parseInt(hexa.slice(start, start + length), 16);
+            const parseColor = (start, length = 2) => 
+                parseInt(hexa.slice(start, start + length), 16);
 
             red = parseColor(0);
             if (hexa.length > 2) green = parseColor(2, hexa.length >= 4 ? 2 : 1);
             if (hexa.length > 4) blue = parseColor(4, hexa.length >= 6 ? 2 : 1);
-            if (hexa.length > 6) alpha = parseFloat(((parseColor(6, hexa.length === 8 ? 2 : 1))/255).toFixed(2));
+            if (hexa.length > 6) 
+                alpha = parseFloat(((parseColor(6, hexa.length === 8 ? 2 : 1))/255).toFixed(2));
             else alpha = 1;
             
             [hue, saturation, lightness] = rgbToHsl(red, green, blue);
             updateMayor();
             updateAlpha();
-            updateNameColor();} }
+            updateNameColor();
+        }
+    }
+
+    function updateTulisanRatio(bgc) {
+        const wcga = document.querySelector('#wcga_content');
+        const fgc = `rgb(${red},${green},${blue})`;
+        const ratio = getContrastRatio([red, green, blue], bgc.match(/\d+/g).map(Number));
+
+        wcga.style.color = fgc;
+        wcga.style.background = bgc;
+        document.querySelector('#fore').innerHTML = fgc;
+        document.querySelector('#back').innerHTML = bgc;
+        document.querySelector('#wcidx').innerHTML = " " + ratio;
+    }
+
+    function updateWcgaColor() {
+        sugested = findACompliantBackgrounds();
+        const bgc = !sugested || !sugested[0] || !sugested[0].rgb
+            ? "rgb(255,255,255)"
+            : `rgb(${sugested[0].rgb.join(',')})`;
+        updateTulisanRatio(bgc);
+
+        htmx.ajax('POST', '/bk_wcga_color', {
+            target: '#bk_color',
+            swap: 'outerHTML',
+            values: {
+                bk_color: JSON.stringify(sugested),
+                fg_color: `rgb(${red},${green},${blue})`
+            }
+        });
+    }
+
+    function changeBwColor() {
+        const bkClr = window.getComputedStyle(this).backgroundColor;
+        updateTulisanRatio(bkClr);
+    }
+
+    function addBkClrLstnr() {
+        document.querySelectorAll('.bw_color').forEach (elem => {
+            elem.addEventListener('click', changeBwColor);})
+    }
 
     function makeActive() {
         const aktif = document.querySelector('.is-active');
         aktif.classList.remove('is-active');
         this.classList.add('is-active');
+        
+        const clrGet = getRGBFromColorName(this.id);
+        [red, green, blue] = clrGet.match(/\d+/g).map(Number)
+        updateMayor();
+        
         htmx.ajax('POST', '/grid_color', {
             target: '#grid_color',
             swap: 'innerHTML',
             values: {
-                elementId: this.id}}); }
+                elementId: this.id
+            }
+        });
+    }
 
     function addTabItemLstnr() {
         document.querySelectorAll('.tab_item').forEach (elem => {
-            elem.addEventListener('click', makeActive);})}
+            elem.addEventListener('click', makeActive);
+        })
+    }
 
     function changeColor() {
         const tulisan = this.innerHTML;
@@ -336,27 +448,36 @@ document.addEventListener('DOMContentLoaded', function() {
         green = parseInt(match[2]);
         blue = parseInt(match[3]);
         [hue, saturation, lightness] = rgbToHsl(red, green, blue);
-        updateMayor(); }
+        updateMayor();
+    }
 
     function addNmClrLstnr() {
         document.querySelectorAll('.grid_color').forEach (elem => {
-            elem.addEventListener('click', changeColor);})}
+            elem.addEventListener('click', changeColor);
+        })
+    }
 
     // Attach event listeners
     document.querySelectorAll('.slider').forEach (slider => {
-        slider.addEventListener('input', updateRangeTrack);});
+        slider.addEventListener('input', updateRangeTrack);
+    });
 
     document.querySelectorAll('.angka').forEach (angka => {
-        angka.addEventListener('change', updateInputField);});
+        angka.addEventListener('change', updateInputField);
+    });
     
     document.querySelector('#hx_rgb').addEventListener('change', updateHexInput);
 
-    document.querySelector('#awal').addEventListener(
+    document.querySelector('#oawal').addEventListener(
         'htmx:afterSwap', function(event) {
             if (event.target.id === "name_color") {
                 addTabItemLstnr();
-                addNmClrLstnr();}
-            else if (event.target.id === "grid_color") {addNmClrLstnr();}});
+                addNmClrLstnr();
+            }
+            else if (event.target.id === "grid_color") {addNmClrLstnr();}
+            else if (event.target.id === "bk_color") {addBkClrLstnr();}
+        }
+    );
     
     updateMayor();
     updateAlpha();

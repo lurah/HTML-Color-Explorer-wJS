@@ -1,183 +1,196 @@
 :root {
-  --bulma-block-spacing: 10px;
-  --bulma-column-gap: 7px;
+    --bulma-block-spacing: 10px;
+    --bulma-column-gap: 7px;
 }
 
 /* General styles for the range input */
 .slider {
-    -webkit-appearance: none; /* Remove default styling in WebKit browsers */
-    -moz-appearance: none;
-    appearance: none;
-    height: 9px; /* Set the height of the track --> mostly influence mozzila*/
-    width: 150px;
-    border-radius: 5px;
-    background: transparent;
-    outline: none; /* Remove focus outline */    
+      -webkit-appearance: none; /* Remove default styling in WebKit browsers */
+      -moz-appearance: none;
+      appearance: none;
+      height: 9px; /* Set the height of the track --> mostly influence mozzila*/
+      width: 150px;
+      border-radius: 5px;
+      background: transparent;
+      outline: none; /* Remove focus outline */    
 }
   
 /* Styling the track in WebKit browsers */
 .slider::-webkit-slider-runnable-track {
-    height: 8px; /* independent from setting height above */
-    outline: solid var(--bulma-scheme-main);
-    border-radius: 5px; /* Rounded corners for the track */
+      height: 8px; /* independent from setting height above */
+      outline: solid var(--bulma-scheme-main);
+      border-radius: 5px; /* Rounded corners for the track */
 }
 
 /* Styling the track in Firefox */
 .slider::-moz-range-track {
-    height: 9px; /* Set the height of the track */
-    /* width: 150px; */
-    border: 2px solid var(--bulma-scheme-main);
-    border-radius: 8px; /* Rounded corners for the track */
+      height: 9px; /* Set the height of the track */
+      /* width: 150px; */
+      border: 2px solid var(--bulma-scheme-main);
+      border-radius: 8px; /* Rounded corners for the track */
 }
   
 /* Styling the thumb in WebKit browsers */
 .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Remove default styling */
-    appearance: none;
-    position: relative;
-    top: -2px;
-    width: 14px; /* Width of the thumb */
-    height: 14px; /* Height of the thumb */
-    background: var(--bulma-text-light);
-    outline: solid var(--bulma-text-invert);
-    border-radius: 50%; /* Circular shape */
-    cursor: pointer; /* Pointer cursor on hover */    
+      -webkit-appearance: none; /* Remove default styling */
+      appearance: none;
+      position: relative;
+      top: -2px;
+      width: 14px; /* Width of the thumb */
+      height: 14px; /* Height of the thumb */
+      background: var(--bulma-text-light);
+      outline: solid var(--bulma-text-invert);
+      border-radius: 50%; /* Circular shape */
+      cursor: pointer; /* Pointer cursor on hover */    
 }
   
 /* Styling the thumb in Firefox */
 .slider::-moz-range-thumb {
-    -moz-appearance: none;
-    appearance: none;
-    width: 14px; /* Width of the thumb */
-    height: 14px; /* Height of the thumb */
-    background: var(--bulma-text-light);
-    border: 2px solid var(--bulma-text-invert);
-    border-radius: 50%; /* Circular shape */
-    cursor: pointer; /* Pointer cursor on hover */
+      -moz-appearance: none;
+      appearance: none;
+      width: 14px; /* Width of the thumb */
+      height: 14px; /* Height of the thumb */
+      background: var(--bulma-text-light);
+      border: 2px solid var(--bulma-text-invert);
+      border-radius: 50%; /* Circular shape */
+      cursor: pointer; /* Pointer cursor on hover */
 }
 
 .slider.alpha {
-    width: 150px;
+      width: 150px;
 }
 
 .tabs {
-  --bulma-tabs-toggle-link-radius: 0px;
+    --bulma-tabs-toggle-link-radius: 0px;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 input[type="number"] {
-  outline: none;
-  -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
-  -webkit-appearance: textfield;
-  appearance: textfield;
-  border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
-  border-radius: 5px;
+    outline: none;
+    -moz-appearance: textfield; /* removing up & down arrow spinner for mozilla */
+    -webkit-appearance: textfield;
+    appearance: textfield;
+    border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+    border-radius: 5px;
 }
 
 input[type="text"] {
-  outline: none;
-  border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
-  border-radius: 5px;
+    outline: none;
+    border: 1px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+    border-radius: 5px;
 }
 
 input[type="number"]:focus, input[type="text"]:focus {
-  border: 2px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+    border: 2px solid hsl(var(--bulma-link-h),var(--bulma-link-s),var(--bulma-link-l));
+}
+
+.blinking {
+    animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 .box.red {
-  background-color: rgb(255,0,0);
+    background-color: rgb(255,0,0);
 }
 
 .box.green {
-  background-color: rgb(0,127,0);
+    background-color: rgb(0,127,0);
 }
 
 .box.blue {
-  background-color: rgb(0,0,255);
+    background-color: rgb(0,0,255);
 }
 
 .box.alpha {
-  padding: 5px 15px;
+    padding: 5px 15px;
 }
 
 .angka {
-  width: 2.5em;
-  font-size: .75em;
-  text-align: right;
+    width: 2.5em;
+    font-size: .75em;
+    text-align: right;
 }
 
 .sepan {
-  display: inline-block;
-  width: 7.8em;
+    display: inline-block;
+    width: 7.8em;
 }
 
 .box-color {
-  margin-left: 10px;
-  margin-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #ip_rgb, #ip_hsl {
-  width: 3em;
+    width: 3em;
 }
 
 #hx_rgb {
-  width: 5.9em;
+    width: 5.9em;
 }
 
 #wadah {
-  height: 175px;
-  width: 275px;  
-  margin-bottom: 10px;
-  border-radius: 15px;
-  border: 1px solid black;
-  position: relative;
+    height: 175px;
+    width: 275px;  
+    margin-bottom: 10px;
+    border-radius: 15px;
+    border: 1px solid black;
+    position: relative;
 }
 
 #depan, #belakang, #cmp_clr, #cmp_txt {
-  position: absolute;
+    position: absolute;
 }
 
 #depan, #belakang {
-  width: 210px;
-  height: 80px;
-  border-radius: 15px;
+    width: 210px;
+    height: 80px;
+    border-radius: 15px;
 }
 
 #belakang {
-  top: 15px;
-  left: 20px; 
+    top: 15px;
+    left: 20px; 
 }
 
 #depan {
-  top: 50px;
-  left: 40px;
+    top: 50px;
+    left: 40px;
 }
 
 #cmp_clr {
-  top: 5px;
-  left: 50px;
+    top: 5px;
+    left: 50px;
 }
 
 #cmp_txt {
-  top: 140px;
-  left: 65px;
+    top: 140px;
+    left: 65px;
 }
 
 #name_color {
-  width: 310px;
+    width: 310px;
+}
+
+#grid_color, #bk_color {
+    margin: 0;
+    padding: 0px;
 }
 
 #grid_color {
-  margin: 0;
-  padding: 0px;
-  width: 290px;
+    width: 290px;
 }
 
 #wcga_color {
-  width: 400px;
+    width: 335px;
+    margin-left: 30px;
 }

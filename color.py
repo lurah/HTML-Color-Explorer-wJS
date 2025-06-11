@@ -1,5 +1,6 @@
 from fasthtml.common import * # type: ignore
 import nm_clr_list as cl
+import json
 
 hdrs = (
     Link(rel="icon", type="image/png", href="static/school-bus.png"),
@@ -9,14 +10,11 @@ hdrs = (
         type="text/css",
     ),
     Link(rel="stylesheet", href="static/styles.css", type="text/css"),
-    Script(code="import tinycolor from 'https://esm.sh/tinycolor2';", type="module"),
     Script(src="static/slider.js"),
 )
 
-
 app = FastHTML(pico=False, hdrs=hdrs)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 def box_color():
     respon = (
@@ -34,7 +32,6 @@ def box_color():
         ),
     )
     return respon
-
 
 def input_color():
     respon = Div(
@@ -129,11 +126,9 @@ def input_color():
     )
     return respon
 
-
 def full_box_color():
     respon = Div(box_color(), input_color(), cls="column is-narrow box-color")
     return respon
-
 
 def slider(judul: str, maks):
     jarak = 1 if judul != "alpha" else 0.01
@@ -145,7 +140,6 @@ def slider(judul: str, maks):
     )
     return respon
 
-
 def slider_rgb():
     respon = Div(
         slider("red", 255),
@@ -154,7 +148,6 @@ def slider_rgb():
         cls="column is-narrow",
     )
     return respon
-
 
 def slider_hsl():
     respon = Div(
@@ -165,12 +158,10 @@ def slider_hsl():
     )
     return respon
 
-
 def rgb_distance(rgb1, rgb2):
     r1, g1, b1 = rgb1
     r2, g2, b2 = rgb2
     return math.sqrt((r1 - r2) ** 2 + (g1 - g2) ** 2 + (b1 - b2) ** 2)
-
 
 def closest_named_color(target_rgb):
     min = float("inf")
@@ -185,7 +176,6 @@ def closest_named_color(target_rgb):
                 clst_pg = klr_i
     return clst_pg, clst
 
-
 def tab_item(judul: str, aktif=False):
     respon = Li(
         A(Span(f"{judul}")),
@@ -193,7 +183,6 @@ def tab_item(judul: str, aktif=False):
         id=f"{judul}",
     )
     return respon
-
 
 def tab_color(all_lists: list, clr_fam, mrg_akhir=False):
     tabs = []
@@ -205,7 +194,6 @@ def tab_color(all_lists: list, clr_fam, mrg_akhir=False):
         cls="tabs is-toggle is-small mb-0" if mrg_akhir else "tabs is-toggle is-small",
     )
     return respon
-
 
 def grid_color(family):
     kolor_list = getattr(cl, family)
@@ -226,7 +214,6 @@ def grid_color(family):
     respon = Div(*node_color, id="grid_color", cls="columns is-mobile is-multiline")
     return respon
 
-
 def name_color_all(red, green, blue):
     target_rgb = (red, green, blue)
     clr_fam, _ = closest_named_color(target_rgb)
@@ -238,13 +225,12 @@ def name_color_all(red, green, blue):
         Div("List of named-color:", cls="has-text-weight-bold"),
         grid_color(f"{clr_fam}"),
         id="name_color",
-        cls="column is-narrow",
+        cls="column is-narrow ml-6",
     )
     return respon
 
 def grid_bk_color():
-    
-    respon = Div("Test", id="bk_color", cls="column is-narrow")
+    respon = Div(id="bk_color", cls="columns is-mobile is-multiline ml-4")
     return respon
 
 def wcga_color():
@@ -259,17 +245,19 @@ def wcga_color():
     respon = Div(
         Div(content, cls="box is-size-7", id="wcga_content", style="background-color: pink"),
         Div(judul,
-            Span(" 4.1", id="wcidx"),
+            Span(" 4.1", id="wcidx", cls="blinking"), P(),
+            Span("Foreground Color: "), Span("rgb(255,0,0)", id="fore"),P(),
+            Span("Background Color: "), Span("rgb(255,255,255)", id="back"),
             cls="box has-text-primary has-text-weight-bold is-size-7"
         ),
         Div(
             "Sugested ",
-            Span("background", id="bk_color"),
+            Span("background", id="span_bk_color"),
             Span(" color"),
-            cls = "has-text-weight-bold is-size-7 mt-5"
+            cls = "has-text-weight-bold is-size-7 mt-5 mb-2"
         ),
         grid_bk_color(),
-        cls = "column is-narrow mt-2 ml-5",
+        cls = "column is-narrow mt-2 mr-5",
         id = "wcga_color",
     )
     return respon
@@ -282,8 +270,8 @@ def kolom():
         cls="columns is-mobile is-multiline is-centered",
         id="awal",
     ), Div (
-        name_color_all(255, 0, 0),
         wcga_color(),
+        name_color_all(255, 0, 0),
         cls="columns is-mobile is-multiline is-centered",
         id="oawal",
     )
@@ -296,15 +284,29 @@ def index():
         "HTML Color Explorer", cls="title has-text-centered m-6 has-text-primary"
     ), kolom()
 
-
 @app.route("/grid_color", methods=["post"])
 def grid(elementId: str):
     return grid_color(elementId)
-
 
 @app.route("/name_color", methods=["post"])
 def name(red: int, green: int, blue: int):
     return name_color_all(red, green, blue)
 
+@app.route("/bk_wcga_color", methods=["post"])
+def bk_color(bk_color:str, fg_color:str):
+    suggested = json.loads(bk_color)
+    node_color = []
+    if len(suggested) != 0:
+        sug = [f"rgb({','.join(map(str, item['rgb']))})" for item in suggested]
+        for cl in sug:
+            node_color.append(
+                Div(
+                    cl,
+                    style=f"color: {fg_color}; background-color: {cl}",
+                    cls="column has-text-centered is-size-7 bw_color",
+                )
+            )
+    respon = Div(*node_color, id="bk_color", cls="columns is-mobile is-multiline")
+    return respon
 
 serve()
