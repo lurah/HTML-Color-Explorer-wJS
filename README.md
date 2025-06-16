@@ -63,7 +63,7 @@ Running this web application is straightforward. You can use any Linux distribut
     python color.py
 ```
 
-The web server will start automatically on port 8000. To access the application, open your web browser and visit: http://localhost:8000
+The web server will start automatically on port 5001. To access the application, open your web browser and visit: http://localhost:5001
 
 
 
