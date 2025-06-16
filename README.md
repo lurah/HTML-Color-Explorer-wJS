@@ -53,13 +53,13 @@ Running this web application is straightforward. You can use any Linux distribut
 2. Clone the repository:
 
 ```bash
-    git clone color-w-js
+    git clone https://github.com/lurah/HTML-Color-Explorer-wJS.git
 ```
 
 3. Navigate to the project directory and launch the application:
 
 ```bash
-    cd color-w-js
+    cd HTML-Color-Explorer-wJS
     python color.py
 ```
 
